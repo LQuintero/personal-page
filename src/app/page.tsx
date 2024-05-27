@@ -12,10 +12,10 @@ export default function Home() {
   return (
     <main className='flex min-h-screen flex-col items-center p-24'>
       <div>
-        <h1 className='text-7xl font-bold text-center tracking-wide my-8'>
+        <h1 className='text-7xl font-bold text-center tracking-wide mt-8'>
           Laura Quintero
         </h1>
-        <p className='text-3xl text-center tracking-wide'>Technologist</p>
+        <p className='text-3xl text-center tracking-wide mt-4'>Technologist</p>
       </div>
       <div id="links" className='inline-block'>
         <List items={[
