@@ -10,7 +10,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, onClick, label }) => {
   return (
     <button
       onClick={onClick}
-      className="flex items-center p-2 hover:bg-gray-100"
+      className="flex items-center p-2 hover:scale-125"
       aria-label={label}
     >
      {icon && <span className="">{icon}</span>}
