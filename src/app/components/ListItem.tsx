@@ -10,17 +10,22 @@ interface ListItemProps {
   text?: string;
   callback?: () => void;
   icon?: React.ReactNode;
+  tooltipText?: string;
+  tooltipPosition?: string;
 }
 
-const ListItem: React.FC<ListItemProps> = ({ id, text, callback, icon }) => {
-    return (
+const ListItem: React.FC<ListItemProps> = ({ id, text, callback,
+  icon, tooltipText, tooltipPosition }) => {
+  const toolTipContent = tooltipText ?  tooltipText : '';
+  const tooltipPlace = tooltipPosition ? tooltipPosition : 'top'; 
+  return (
       <li
         id={id}
         className={`flex items-center p-2 border-b`}
       >
         <div
-          data-tooltip-id="my-tooltip"
-          data-tooltip-content="Hello world!"
+          data-tooltip-id={`${id}-tooltip`}
+          data-tooltip-content={toolTipContent}
         >
         {icon ? (
             IconButton({ icon, onClick: callback, label: text })
@@ -28,7 +33,7 @@ const ListItem: React.FC<ListItemProps> = ({ id, text, callback, icon }) => {
             <span onClick={callback}>{text}</span>
         )}
         </div>
-        <Tooltip id="my-tooltip"/>
+        {tooltipText && <Tooltip id={`${id}-tooltip`}/> }
       </li>
     );
   };
