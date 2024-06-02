@@ -3,10 +3,10 @@
 import React from 'react';
 import IconButton from './IconButton';
 import { Tooltip } from 'react-tooltip';
-
+import { v4 as uuidv4 } from 'uuid';
 
 interface ListItemProps {
-  id?: string;
+  id: string;
   text?: string;
   callback?: () => void;
   icon?: React.ReactNode;
@@ -16,16 +16,23 @@ interface ListItemProps {
 
 const ListItem: React.FC<ListItemProps> = ({ id, text, callback,
   icon, tooltipText, tooltipPosition }) => {
-  const toolTipContent = tooltipText ?  tooltipText : '';
-  const tooltipPlace = tooltipPosition ? tooltipPosition : 'top'; 
+  let toolTipContent = {};
+  const toolTipId = `${id}-tooltip`
+  // const tooltipPlace = tooltipPosition ? tooltipPosition : 'top'; 
+  console.log(uuidv4())
+  if (tooltipText) {
+    toolTipContent = {
+      "data-tooltip-id": toolTipId,
+      "data-tooltip-content": tooltipText,
+    }
+  }
   return (
       <li
         id={id}
         className={`flex items-center p-2 border-b`}
       >
         <div
-          data-tooltip-id={`${id}-tooltip`}
-          data-tooltip-content={toolTipContent}
+          {...toolTipContent}
         >
         {icon ? (
             IconButton({ icon, onClick: callback, label: text })
@@ -33,7 +40,7 @@ const ListItem: React.FC<ListItemProps> = ({ id, text, callback,
             <span onClick={callback}>{text}</span>
         )}
         </div>
-        {tooltipText && <Tooltip id={`${id}-tooltip`}/> }
+        {tooltipText && <Tooltip id={toolTipId}/> }
       </li>
     );
   };

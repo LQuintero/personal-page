@@ -19,9 +19,12 @@ export default function Home() {
       </div>
       <div id="links" className='inline-block'>
         <List items={[
-          { id: 1, icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemClassesBrands} /> },
-          { id: 2, icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemClassesBrands} /> },
-          { id: 3, icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemClassesRegular} /> }
+          { id: '1',
+            icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemClassesBrands}/>,
+            tooltipText: 'LinkedIn'
+          },
+          { id: '2', icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemClassesBrands} /> },
+          { id: '3', icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemClassesRegular} /> }
         ]} 
         isHorizontal={true}
         />

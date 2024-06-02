@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import ListItem from './ListItem';
 
 interface Item {
-  id: number;
+  id: string;
   text?: string;
   icon?: React.ReactNode;
   callback?: () => void;
+  tooltipText?: string;
 }
 
 interface ListProps {
@@ -21,9 +22,12 @@ const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
       {items.map((item) => (
         <ListItem
           key={item.id}
+          id={item.id}
           text={item.text}
           icon={item.icon}
           callback={item.callback}
+          tooltipText={item.tooltipText}
+          tooltipPosition='bottom'
         />
       ))}
     </ul>
