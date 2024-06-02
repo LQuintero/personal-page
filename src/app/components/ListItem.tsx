@@ -18,12 +18,12 @@ const ListItem: React.FC<ListItemProps> = ({ id, text, callback,
   icon, tooltipText, tooltipPosition }) => {
   let toolTipContent = {};
   const toolTipId = `${id}-tooltip`
-  // const tooltipPlace = tooltipPosition ? tooltipPosition : 'top'; 
-  console.log(uuidv4())
+  const tooltipPlace = tooltipPosition ? tooltipPosition : 'top'; 
   if (tooltipText) {
     toolTipContent = {
       "data-tooltip-id": toolTipId,
       "data-tooltip-content": tooltipText,
+      "data-tooltip-place": tooltipPlace
     }
   }
   return (

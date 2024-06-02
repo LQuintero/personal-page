@@ -1,14 +1,15 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faSquareGithub } from '@fortawesome/free-brands-svg-icons';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
-import { Tooltip } from 'react-tooltip';
 import List from './components/List';
 
 export default function Home() {
   const itemClassesShared = 'place-content-center'
   const itemClassesBrands = `h-9 ${itemClassesShared}`
   const itemClassesRegular = `h-8 ${itemClassesShared}`
-
+  const btnCallback = (href: string) => {
+    `window.open(${href})`
+  }
   return (
     <main className='flex min-h-screen flex-col items-center p-24'>
       <div>
@@ -19,12 +20,21 @@ export default function Home() {
       </div>
       <div id="links" className='inline-block'>
         <List items={[
-          { id: '1',
+          {
+            id: '1',
             icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemClassesBrands}/>,
             tooltipText: 'LinkedIn'
           },
-          { id: '2', icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemClassesBrands} /> },
-          { id: '3', icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemClassesRegular} /> }
+          {
+            id: '2',
+          icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemClassesBrands} />,
+          tooltipText: 'GitHub'
+        },
+          {
+            id: '3',
+            icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemClassesRegular} />,
+            tooltipText: 'Resume'
+           }
         ]} 
         isHorizontal={true}
         />
