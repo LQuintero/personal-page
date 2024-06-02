@@ -7,9 +7,9 @@ export default function Home() {
   const itemClassesShared = 'place-content-center'
   const itemClassesBrands = `h-9 ${itemClassesShared}`
   const itemClassesRegular = `h-8 ${itemClassesShared}`
-  const btnCallback = (href: string) => {
-    `window.open(${href})`
-  }
+  // const btnCallback = () => {
+  //   window.open('https://www.linkedin.com/in/quintero.laura/')
+  // }
   return (
     <main className='flex min-h-screen flex-col items-center p-24'>
       <div>

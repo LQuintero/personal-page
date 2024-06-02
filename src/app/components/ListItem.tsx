@@ -3,19 +3,19 @@
 import React from 'react';
 import IconButton from './IconButton';
 import { Tooltip } from 'react-tooltip';
-import { v4 as uuidv4 } from 'uuid';
 
 interface ListItemProps {
   id: string;
   text?: string;
-  callback?: () => void;
   icon?: React.ReactNode;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   tooltipText?: string;
   tooltipPosition?: string;
 }
 
-const ListItem: React.FC<ListItemProps> = ({ id, text, callback,
-  icon, tooltipText, tooltipPosition }) => {
+const ListItem: React.FC<ListItemProps> = ({ 
+  id, text, icon, onClick, tooltipText, tooltipPosition
+}) => {
   let toolTipContent = {};
   const toolTipId = `${id}-tooltip`
   const tooltipPlace = tooltipPosition ? tooltipPosition : 'top'; 
@@ -35,9 +35,9 @@ const ListItem: React.FC<ListItemProps> = ({ id, text, callback,
           {...toolTipContent}
         >
         {icon ? (
-            IconButton({ icon, onClick: callback, label: text })
+            IconButton({ icon, onClick: onClick, label: text })
         ) : (
-            <span onClick={callback}>{text}</span>
+            <span onClick={onClick}>{text}</span>
         )}
         </div>
         {tooltipText && <Tooltip id={toolTipId}/> }
