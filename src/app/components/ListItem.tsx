@@ -32,7 +32,7 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
       <li
         id={id}
-        className={`flex items-center p-2 border-b`}
+        className={`flex items-center px-0.5 py-2`}
       >
         <div
           {...toolTipContent}

@@ -7,16 +7,14 @@ import List from './components/List';
 
 //todo make into a client component
 export default function Home() {
-  const itemClassesShared = 'place-content-center'
-  const itemClassesBrands = `h-9 ${itemClassesShared}`
-  const itemClassesRegular = `h-8 ${itemClassesShared}`
+  const itemIconClassesShared = 'place-content-center min-w-12'
+  const itemIconClassesBrands = `h-9 ${itemIconClassesShared}`
+  const itemIconClassesRegular = `h-8 ${itemIconClassesShared}`
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const targetId = (event.target as HTMLButtonElement).id;
     console.log('Button clicked!', event, targetId);
   };
-  // const btnCallback = () => {
-  //   window.open('https://www.linkedin.com/in/quintero.laura/')
-  // }
+
   return (
     <main className='flex min-h-screen flex-col items-center p-24'>
       <div>
@@ -29,21 +27,21 @@ export default function Home() {
         <List items={[
           {
             id: '1',
-            icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemClassesBrands}/>,
+            icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemIconClassesBrands}/>,
             uri: "https://www.linkedin.com/in/quinterolaura/",
             openUriInNewTab: true,
             tooltipText: 'LinkedIn'
           },
           {
             id: '2',
-            icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemClassesBrands} />,
+            icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemIconClassesBrands} />,
             uri: "https://github.com/LQuintero",
+            openUriInNewTab: true,
             tooltipText: 'GitHub'
         },
           {
             id: '3',
-            icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemClassesRegular} />,
-
+            icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemIconClassesRegular} />,
             tooltipText: 'Resume'
            }
         ]} 
