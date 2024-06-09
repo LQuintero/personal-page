@@ -5,6 +5,7 @@ import ListItem from './ListItem';
 
 interface Item {
   id: string;
+  type: 'link' | 'button' | 'text';
   text?: string;
   icon?: React.ReactNode;
   uri?: string;
@@ -25,6 +26,7 @@ const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
         <ListItem
           key={item.id}
           id={item.id}
+          type={item.type}
           text={item.text}
           icon={item.icon}
           uri={item.uri}

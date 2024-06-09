@@ -2,10 +2,12 @@
 
 import React from 'react';
 import LinkButton from './LinkButton';
+import IconButton from './IconButton';
 import { Tooltip } from 'react-tooltip';
 
 interface ListItemProps {
   id: string;
+  type: 'link' | 'button' | 'text';
   text?: string;
   icon?: React.ReactNode;
   uri?: string;
@@ -15,7 +17,7 @@ interface ListItemProps {
 }
 
 const ListItem: React.FC<ListItemProps> = ({ 
-  id, text, icon, uri, openUriInNewTab, tooltipText, tooltipPosition
+  id, type, text, icon, uri, openUriInNewTab, tooltipText, tooltipPosition
 }) => {
   const openLinkInNewTab = openUriInNewTab ? true : false;
   
@@ -37,8 +39,10 @@ const ListItem: React.FC<ListItemProps> = ({
         <div
           {...toolTipContent}
         >
-          {uri ? (
+          {type === 'link' && uri ? (
             <LinkButton uri={uri} label={text} icon={icon} openInNewTab={openLinkInNewTab} />
+          ) : type === 'button' ? (
+            <IconButton label={text} icon={icon} />
           ) : (
             <React.Fragment>
               {icon && <span>{icon}</span>}

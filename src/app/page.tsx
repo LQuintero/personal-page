@@ -7,7 +7,7 @@ import List from './components/List';
 
 //todo make into a client component
 export default function Home() {
-  const itemIconClassesShared = 'place-content-center min-w-12'
+  const itemIconClassesShared = 'place-content-center'
   const itemIconClassesBrands = `h-9 ${itemIconClassesShared}`
   const itemIconClassesRegular = `h-8 ${itemIconClassesShared}`
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -27,6 +27,7 @@ export default function Home() {
         <List items={[
           {
             id: '1',
+            type: 'link',
             icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemIconClassesBrands}/>,
             uri: "https://www.linkedin.com/in/quinterolaura/",
             openUriInNewTab: true,
@@ -34,6 +35,7 @@ export default function Home() {
           },
           {
             id: '2',
+            type: 'link',
             icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemIconClassesBrands} />,
             uri: "https://github.com/LQuintero",
             openUriInNewTab: true,
@@ -41,6 +43,7 @@ export default function Home() {
         },
           {
             id: '3',
+            type: 'button',
             icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemIconClassesRegular} />,
             tooltipText: 'Resume'
            }
