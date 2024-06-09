@@ -7,7 +7,8 @@ interface Item {
   id: string;
   text?: string;
   icon?: React.ReactNode;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  uri?: string;
+  openUriInNewTab?: boolean;
   tooltipText?: string;
 }
 
@@ -26,7 +27,8 @@ const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
           id={item.id}
           text={item.text}
           icon={item.icon}
-          onClick={item.onClick}
+          uri={item.uri}
+          openUriInNewTab={item.openUriInNewTab}
           tooltipText={item.tooltipText}
           tooltipPosition='bottom'
         />

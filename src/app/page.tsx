@@ -30,19 +30,20 @@ export default function Home() {
           {
             id: '1',
             icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemClassesBrands}/>,
-            onClick: handleButtonClick,
+            uri: "https://www.linkedin.com/in/quinterolaura/",
+            openUriInNewTab: true,
             tooltipText: 'LinkedIn'
           },
           {
             id: '2',
-          icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemClassesBrands} />,
-          onClick: handleButtonClick,
-          tooltipText: 'GitHub'
+            icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemClassesBrands} />,
+            uri: "https://github.com/LQuintero",
+            tooltipText: 'GitHub'
         },
           {
             id: '3',
             icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemClassesRegular} />,
-            onClick: handleButtonClick,
+
             tooltipText: 'Resume'
            }
         ]} 
