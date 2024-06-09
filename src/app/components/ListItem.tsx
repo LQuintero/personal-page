@@ -8,7 +8,7 @@ interface ListItemProps {
   id: string;
   text?: string;
   icon?: React.ReactNode;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   tooltipText?: string;
   tooltipPosition?: string;
 }

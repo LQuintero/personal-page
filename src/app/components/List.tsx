@@ -7,6 +7,7 @@ interface Item {
   id: string;
   text?: string;
   icon?: React.ReactNode;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   tooltipText?: string;
 }
 
@@ -17,9 +18,6 @@ interface ListProps {
 
 const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
   const listDirection = isHorizontal ? 'flex-row' : 'flex-col';
-  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('Button clicked!', event);
-  };
   return (
     <ul className={`list-none p-0 flex ${listDirection}`}>
       {items.map((item) => (
@@ -28,7 +26,7 @@ const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
           id={item.id}
           text={item.text}
           icon={item.icon}
-          onClick={handleButtonClick}
+          onClick={item.onClick}
           tooltipText={item.tooltipText}
           tooltipPosition='bottom'
         />
