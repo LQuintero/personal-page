@@ -14,7 +14,7 @@ interface Item {
 }
 
 interface ListProps {
-  items: Item[];
+  items: (IconButton | LinkButton)[];
   isHorizontal?: boolean;
 }
 

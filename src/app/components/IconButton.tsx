@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface IconButtonProps {
+export interface IconButtonProps {
   id?: string;
   icon?: React.ReactNode;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;

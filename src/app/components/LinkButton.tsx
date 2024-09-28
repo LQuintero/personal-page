@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface LinkButtonProps {
+export interface LinkButtonProps {
   id?: string;
   icon?: React.ReactNode;
   uri: string;

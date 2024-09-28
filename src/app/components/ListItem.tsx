@@ -1,25 +1,32 @@
 'use client';
 
 import React from 'react';
-import LinkButton from './LinkButton';
-import IconButton from './IconButton';
+import LinkButton, { LinkButtonProps } from './LinkButton';
+import IconButton, { IconButtonProps } from './IconButton';
 import { Tooltip } from 'react-tooltip';
 
-interface ListItemProps {
+// interface ListItemProps {
+//   id: string;
+//   type: 'link' | 'button' | 'text';
+//   text?: string;
+//   icon?: React.ReactNode;
+//   uri?: string;
+//   openUriInNewTab?: boolean;
+//   tooltipText?: string;
+//   tooltipPosition?: string;
+// }
+interface ListItemProps extends LinkButtonProps, IconButtonProps {
   id: string;
   type: 'link' | 'button' | 'text';
   text?: string;
-  icon?: React.ReactNode;
-  uri?: string;
-  openUriInNewTab?: boolean;
   tooltipText?: string;
   tooltipPosition?: string;
 }
 
 const ListItem: React.FC<ListItemProps> = ({ 
-  id, type, text, icon, uri, openUriInNewTab, tooltipText, tooltipPosition
+  id, type, text, icon, uri, openInNewTab, tooltipText, tooltipPosition
 }) => {
-  const openLinkInNewTab = openUriInNewTab ? true : false;
+  const openLinkInNewTab = openInNewTab ? true : false;
   
   let toolTipContent = {};
   const toolTipId = `${id}-tooltip`
