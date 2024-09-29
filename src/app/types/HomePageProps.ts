@@ -4,5 +4,7 @@ export interface HomePageProps {
     title: string;
     subtitle: string;
     list: ListItemProps[];
+    styleScriptSrc?: string;
+    styleDependencyScriptSrc?: string;
   }
   

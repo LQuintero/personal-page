@@ -1,12 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation';
+import Script from 'next/script';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLinkedin, faSquareGithub } from '@fortawesome/free-brands-svg-icons';
-import { faSquareEnvelope, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faLinkedin, faSquareGithub, faSquareXTwitter } from '@fortawesome/free-brands-svg-icons';
+// import { faSquareEnvelope, faFile } from '@fortawesome/free-solid-svg-icons';
 
-import Home from '../components/HomePage';
-import { ListItemProps } from '../types/ListItemProps';
+import Home from './components/HomePage';
+import { ListItemProps } from './types/ListItemProps';
 
 const App = () => {
   const router = useRouter(); 
@@ -48,34 +49,48 @@ const App = () => {
       tooltipPosition: tooltipPosition
     },
     {
-      type: 'button',
+      type: 'link',
       item: {
         id: '3',
-        icon: <FontAwesomeIcon id="contact" icon={faSquareEnvelope} className={itemIconClassesShort} />,
-        onClick: handleContactButtonClick
+        icon: <FontAwesomeIcon id="github" icon={faSquareXTwitter} className={itemIconClassesShort} />,
+        uri: "https://x.com/LauraQuintero",
+        openInNewTab: true
       },
-      tooltipText: 'Contact Me',
+      tooltipText: 'Twitter',
       tooltipPosition: tooltipPosition
     },
-    {
-      type: 'button',
-      item: {
-        id: '4',
-        icon: <FontAwesomeIcon id="resume" icon={faFile} className={itemIconClassesTall} />,
-        onClick: handleContactButtonClick
-      },
-      tooltipText: 'Resume',
-      tooltipPosition: tooltipPosition
-    }
+    // {
+    //   type: 'button',
+    //   item: {
+    //     id: '3',
+    //     icon: <FontAwesomeIcon id="contact" icon={faSquareEnvelope} className={itemIconClassesShort} />,
+    //     onClick: handleContactButtonClick
+    //   },
+    //   tooltipText: 'Contact Me',
+    //   tooltipPosition: tooltipPosition
+    // }
   ];
 
 
   return (
+    <>
+    <Script
+            src="/particles/sketch.min.js"
+            strategy="lazyOnload"  // Load the script lazily after the page has loaded
+            onLoad={() => {console.log(`FIrst Script loaded`)}}
+    />
+    <Script
+            src="/particles/particles.js"
+            strategy="lazyOnload"  // Load the script lazily after the page has loaded
+            onLoad={() => {console.log(`Second Script loaded`)}}
+    />
+    <div id="container"></div>
     <Home
       title="Laura Quintero"
       subtitle="Technologist"
       list={listItems}
     />
+    </>
   );
 };
 
