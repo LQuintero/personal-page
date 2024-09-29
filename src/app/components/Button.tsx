@@ -1,13 +1,13 @@
 import React from 'react';
 
-export interface IconButtonProps {
+export interface ButtonProps {
   id?: string;
   icon?: React.ReactNode;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   label?: string;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({ id, icon, onClick, label }) => {
+const Button: React.FC<ButtonProps> = ({ id, icon, onClick, label }) => {
   return (
     <button
       id={id}
@@ -21,4 +21,4 @@ const IconButton: React.FC<IconButtonProps> = ({ id, icon, onClick, label }) => 
   );
 };
 
-export default IconButton;
+export default Button;

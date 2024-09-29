@@ -2,12 +2,12 @@
 
 import React from 'react';
 import LinkButton, { LinkButtonProps } from './LinkButton';
-import IconButton, { IconButtonProps } from './IconButton';
+import Button, { ButtonProps } from './Button';
 import { Tooltip } from 'react-tooltip';
 
 export interface ListItemProps {
   type: 'link' | 'button';
-  item: IconButtonProps | LinkButtonProps;
+  item: ButtonProps | LinkButtonProps;
   tooltipText?: string;
   tooltipPosition?: string;
 }
@@ -38,7 +38,7 @@ const ListItem: React.FC<ListItemProps> = ({
           {type === 'link' && 'uri' in item ? (
             <LinkButton uri={item.uri} label={item.label} icon={item.icon} openInNewTab={item.openInNewTab} />
           ) : type === 'button' && 'onClick' in item ? (
-            <IconButton label={item.label} icon={item.icon} onClick={item.onClick}/>
+            <Button label={item.label} icon={item.icon} onClick={item.onClick}/>
           ) : null}
         </div>
         {tooltipText && <Tooltip id={toolTipId}/> }
