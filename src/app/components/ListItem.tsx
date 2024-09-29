@@ -5,7 +5,7 @@ import { Tooltip } from 'react-tooltip';
 
 import LinkButton from './LinkButton';
 import Button from './Button';
-import { ListItemProps } from '../types';
+import { ListItemProps } from '../types/ListItemProps';
 
 const ListItem: React.FC<ListItemProps> = ({ 
   type, item, tooltipText, tooltipPosition

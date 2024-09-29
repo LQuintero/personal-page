@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ListItem from './ListItem';
-import { ListItemProps } from '../types/ListItemProps';
+import { ListItemProps, ListItemLinkProps, ListItemButtonProps } from '../types/ListItemProps';
 
 interface ListProps {
   items: ListItemProps[];
@@ -16,10 +16,9 @@ const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
       {items.map((item, index) => (
         <ListItem
           key={index}
-          type={item.type}
-          item={item.item}
-          tooltipText={item.tooltipText}
-          tooltipPosition={item.tooltipPosition}
+          {...(item.type === 'link'
+            ? { ...item as ListItemLinkProps }
+            : { ...item as ListItemButtonProps })}
         />
       ))}
     </ul>
