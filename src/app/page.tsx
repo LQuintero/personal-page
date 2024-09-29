@@ -26,25 +26,32 @@ export default function Home() {
       <div id="links" className='inline-block'>
         <List items={[
           {
-            id: '1',
             type: 'link',
-            icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemIconClassesBrands}/>,
-            uri: "https://www.linkedin.com/in/quinterolaura/",
-            openUriInNewTab: true,
+            item: {
+              id: '1',
+              icon: <FontAwesomeIcon id="linkedin" icon={faLinkedin} className={itemIconClassesBrands}/>,
+              uri: "https://www.linkedin.com/in/quinterolaura/",
+              openInNewTab: true
+            },
             tooltipText: 'LinkedIn'
           },
           {
-            id: '2',
             type: 'link',
-            icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemIconClassesBrands} />,
-            uri: "https://github.com/LQuintero",
-            openUriInNewTab: true,
+            item: {
+              id: '2',
+              icon: <FontAwesomeIcon id="github" icon={faSquareGithub} className={itemIconClassesBrands} />,
+              uri: "https://github.com/LQuintero",
+              openInNewTab: true,             
+            },
             tooltipText: 'GitHub'
         },
           {
-            id: '3',
             type: 'button',
-            icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemIconClassesRegular} />,
+            item: {
+              id: '3',
+              icon: <FontAwesomeIcon id="resume"icon={faFile} className={itemIconClassesRegular} />,
+              onClick: handleButtonClick
+            },
             tooltipText: 'Resume'
            }
         ]} 

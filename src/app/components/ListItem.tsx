@@ -5,32 +5,21 @@ import LinkButton, { LinkButtonProps } from './LinkButton';
 import IconButton, { IconButtonProps } from './IconButton';
 import { Tooltip } from 'react-tooltip';
 
-// interface ListItemProps {
-//   id: string;
-//   type: 'link' | 'button' | 'text';
-//   text?: string;
-//   icon?: React.ReactNode;
-//   uri?: string;
-//   openUriInNewTab?: boolean;
-//   tooltipText?: string;
-//   tooltipPosition?: string;
-// }
-interface ListItemProps extends LinkButtonProps, IconButtonProps {
-  id: string;
-  type: 'link' | 'button' | 'text';
-  text?: string;
+export interface ListItemProps {
+  type: 'link' | 'button';
+  item: IconButtonProps | LinkButtonProps;
   tooltipText?: string;
   tooltipPosition?: string;
 }
 
 const ListItem: React.FC<ListItemProps> = ({ 
-  id, type, text, icon, uri, openInNewTab, tooltipText, tooltipPosition
+  type, item, tooltipText, tooltipPosition
 }) => {
-  const openLinkInNewTab = openInNewTab ? true : false;
-  
+  if (!item) return null;
   let toolTipContent = {};
-  const toolTipId = `${id}-tooltip`
-  const tooltipPlace = tooltipPosition ? tooltipPosition : 'top'; 
+  const itemId = item.id ? item.id : Math.random().toString();
+  const toolTipId = `tooltip-${itemId}`;
+  const tooltipPlace = tooltipPosition || 'top'; 
   if (tooltipText) {
     toolTipContent = {
       "data-tooltip-id": toolTipId,
@@ -40,22 +29,17 @@ const ListItem: React.FC<ListItemProps> = ({
   }
   return (
       <li
-        id={id}
+        id={itemId}
         className={`flex items-center px-0.5 py-2`}
       >
         <div
           {...toolTipContent}
         >
-          {type === 'link' && uri ? (
-            <LinkButton uri={uri} label={text} icon={icon} openInNewTab={openLinkInNewTab} />
-          ) : type === 'button' ? (
-            <IconButton label={text} icon={icon} />
-          ) : (
-            <React.Fragment>
-              {icon && <span>{icon}</span>}
-              {text && <span className="ml-2">{text}</span>}
-            </React.Fragment>
-          )}
+          {type === 'link' && 'uri' in item ? (
+            <LinkButton uri={item.uri} label={item.label} icon={item.icon} openInNewTab={item.openInNewTab} />
+          ) : type === 'button' && 'onClick' in item ? (
+            <IconButton label={item.label} icon={item.icon} onClick={item.onClick}/>
+          ) : null}
         </div>
         {tooltipText && <Tooltip id={toolTipId}/> }
       </li>
