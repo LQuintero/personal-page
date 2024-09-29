@@ -11,7 +11,7 @@ const Home: React.FC<HomePageProps> = ({ title, subtitle, list }) => {
         <h1 className='text-7xl font-bold text-center tracking-wide mt-8'>
           {title}
         </h1>
-        <p className='text-3xl text-center tracking-wide mt-4'>{subtitle}</p>
+        <p className='text-3xl text-center tracking-wide mt-8'>{subtitle}</p>
       </div>
       <div id="links" className='inline-block'>
         <List 

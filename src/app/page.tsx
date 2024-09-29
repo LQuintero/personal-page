@@ -25,7 +25,8 @@ const listItems: ListItemProps[] = [
       uri: "https://www.linkedin.com/in/quinterolaura/",
       openInNewTab: true
     },
-    tooltipText: 'LinkedIn'
+    tooltipText: 'LinkedIn',
+    tooltipPosition: 'bottom'
   },
   {
     type: 'link',
@@ -35,7 +36,8 @@ const listItems: ListItemProps[] = [
       uri: "https://github.com/LQuintero",
       openInNewTab: true
     },
-    tooltipText: 'GitHub'
+    tooltipText: 'GitHub',
+    tooltipPosition: 'bottom'
   },
   {
     type: 'button',
@@ -44,7 +46,8 @@ const listItems: ListItemProps[] = [
       icon: <FontAwesomeIcon id="resume" icon={faFile} className={itemIconClassesRegular} />,
       onClick: handleButtonClick
     },
-    tooltipText: 'Resume'
+    tooltipText: 'Resume',
+    tooltipPosition: 'bottom'
   }
 ];
 

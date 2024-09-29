@@ -12,7 +12,7 @@ interface ListProps {
 const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
   const listDirection = isHorizontal ? 'flex-row' : 'flex-col';
   return (
-    <ul className={`list-none p-0 flex ${listDirection}`}>
+    <ul className={`list-none p-0 flex mt-4 ${listDirection}`}>
       {items.map((item, index) => (
         <ListItem
           key={index}
