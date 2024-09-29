@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 
 import { HomePageProps } from '../types/HomePageProps';
 import List from './List';
+import styles from '../styles/HomePage.module.css';
 
 const Home: React.FC<HomePageProps> = ({ title, subtitle, list }) => {
   return (
     <main
-    className='flex min-h-screen flex-col items-center p-24'
+    className={`${styles.main} flex flex-col items-center p-24`}
     >
       <div>
         <h1 className='text-7xl font-bold text-center tracking-wide mt-8'>

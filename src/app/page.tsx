@@ -76,20 +76,18 @@ const App = () => {
     <>
     <Script
             src="/particles/sketch.min.js"
-            strategy="lazyOnload"  // Load the script lazily after the page has loaded
-            onLoad={() => {console.log(`FIrst Script loaded`)}}
+            strategy="lazyOnload"
     />
     <Script
             src="/particles/particles.js"
-            strategy="lazyOnload"  // Load the script lazily after the page has loaded
-            onLoad={() => {console.log(`Second Script loaded`)}}
+            strategy="lazyOnload"
     />
-    <div id="container"></div>
     <Home
       title="Laura Quintero"
       subtitle="Technologist"
       list={listItems}
     />
+    <div id="container"></div>
     </>
   );
 };
