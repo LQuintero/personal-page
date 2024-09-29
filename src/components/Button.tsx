@@ -1,11 +1,5 @@
 import React from 'react';
-
-export interface ButtonProps {
-  id?: string;
-  icon?: React.ReactNode;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  label?: string;
-}
+import { ButtonProps } from '../types';
 
 const Button: React.FC<ButtonProps> = ({ id, icon, onClick, label }) => {
   return (

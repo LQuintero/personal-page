@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import ListItem, { ListItemProps } from './ListItem';
+import ListItem from './ListItem';
+import { ListItemProps } from '../types/ListItemProps';
 
 interface ListProps {
   items: ListItemProps[];

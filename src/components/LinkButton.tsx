@@ -1,12 +1,5 @@
 import React from 'react';
-
-export interface LinkButtonProps {
-  id?: string;
-  icon?: React.ReactNode;
-  uri: string;
-  label?: string;
-  openInNewTab?: boolean;
-}
+import { LinkButtonProps } from '../types';
 
 const LinkButton: React.FC<LinkButtonProps> = ({ id, uri, label, icon, openInNewTab }) => {
     const target = openInNewTab ? '_blank' : '_self';

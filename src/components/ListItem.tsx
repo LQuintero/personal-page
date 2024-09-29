@@ -1,16 +1,11 @@
 'use client';
 
 import React from 'react';
-import LinkButton, { LinkButtonProps } from './LinkButton';
-import Button, { ButtonProps } from './Button';
 import { Tooltip } from 'react-tooltip';
 
-export interface ListItemProps {
-  type: 'link' | 'button';
-  item: ButtonProps | LinkButtonProps;
-  tooltipText?: string;
-  tooltipPosition?: string;
-}
+import LinkButton from './LinkButton';
+import Button from './Button';
+import { ListItemProps } from '../types';
 
 const ListItem: React.FC<ListItemProps> = ({ 
   type, item, tooltipText, tooltipPosition
