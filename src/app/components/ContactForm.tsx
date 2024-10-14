@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const ContactForm: React.FC = () => {
   // State to hold form values
   const [formData, setFormData] = useState({
-    fistname: '',
+    firstname: '',
     lastname: '',
     email: '',
     subject: '',
@@ -25,10 +25,10 @@ const ContactForm: React.FC = () => {
     // You can process form data here (e.g., send to API)
     console.log('Form submitted:', formData);
     alert('Message sent successfully!');
-    
+
     // Reset form after submission
     setFormData({
-      fistname: '',
+      firstname: '',
       lastname: '',
       email: '',
       subject: '',
@@ -36,68 +36,73 @@ const ContactForm: React.FC = () => {
     });
   };
 
+  // Common styles for input and textarea
+  const inputClasses = "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-black";
+
+  const labelClasses = "block text-sm font-medium text-gray-700";
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto p-6 border rounded-lg shadow-lg min-w-[448px]">
       <div>
-        <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">First Name</label>
+        <label htmlFor="firstname" className={labelClasses}>First Name</label>
         <input
           type="text"
           id="firstname"
           name="firstname"
-          value={formData.fistname}
+          value={formData.firstname}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={inputClasses}
           required
         />
       </div>
 
       <div>
-        <label htmlFor="lastname" className="block text-sm font-medium text-gray-700">Last Name</label>
+        <label htmlFor="lastname" className={labelClasses}>Last Name</label>
         <input
           type="text"
           id="lastname"
           name="lastname"
           value={formData.lastname}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={inputClasses}
           required
         />
       </div>
       
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+        <label htmlFor="email" className={labelClasses}>Email</label>
         <input
           type="email"
           id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={inputClasses}
           required
         />
       </div>
 
       <div>
-        <label htmlFor="subject" className="block text-sm font-medium text-gray-700">Subject</label>
+        <label htmlFor="subject" className={labelClasses}>Subject</label>
         <input
           type="text"
           id="subject"
           name="subject"
           value={formData.subject}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={inputClasses}
           required
         />
       </div>
 
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
+        <label htmlFor="message" className={labelClasses}>Message</label>
         <textarea
           id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={inputClasses}
           rows={4}
           required
         ></textarea>
