@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 const ContactForm: React.FC = () => {
   // State to hold form values
   const [formData, setFormData] = useState({
-    name: '',
+    fistname: '',
+    lastname: '',
     email: '',
     subject: '',
     message: ''
@@ -27,7 +28,8 @@ const ContactForm: React.FC = () => {
     
     // Reset form after submission
     setFormData({
-      name: '',
+      fistname: '',
+      lastname: '',
       email: '',
       subject: '',
       message: ''
@@ -35,14 +37,27 @@ const ContactForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto p-6 border rounded-lg shadow-lg">
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto p-6 border rounded-lg shadow-lg min-w-[448px]">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+        <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">First Name</label>
         <input
           type="text"
-          id="name"
-          name="name"
-          value={formData.name}
+          id="firstname"
+          name="firstname"
+          value={formData.fistname}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="lastname" className="block text-sm font-medium text-gray-700">Last Name</label>
+        <input
+          type="text"
+          id="lastname"
+          name="lastname"
+          value={formData.lastname}
           onChange={handleChange}
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
           required
