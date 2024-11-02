@@ -21,6 +21,11 @@ const ContactForm: React.FC = () => {
     });
   };
 
+  const emailSvcId = process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID;
+  const emailTemplateId = process.env.NEXT_PUBLIC_EMAIL_TEMPLATE_ID;
+  if(!emailSvcId || !emailTemplateId) {
+    throw new Error('Email service id and template id are required');
+  }
   // Handle form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,7 +33,7 @@ const ContactForm: React.FC = () => {
     setStatus('Sending...');
     console.log("process.env.EMAIL_SERVICE_ID", process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID);
     emailjs
-      .send(process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID, process.env.NEXT_PUBLIC_EMAIL_TEMPLATE_ID, formData, process.env.NEXT_PUBLIC_EMAIL_USER_ID)
+      .send(emailSvcId, emailTemplateId, formData, process.env.NEXT_PUBLIC_EMAIL_USER_ID)
       .then(
         (response) => {
           console.log('Email sent successfully!', response.status, response.text);
