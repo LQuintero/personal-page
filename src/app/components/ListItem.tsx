@@ -6,6 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import LinkButton from './LinkButton';
 import Button from './Button';
 import { ListItemProps } from '../types/ListItemProps';
+import styles from '../styles/ListItem.module.css';
 
 const ListItem: React.FC<ListItemProps> = ({ 
   type, item, tooltipText, tooltipPosition
@@ -25,7 +26,7 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
       <li
         id={itemId}
-        className={`flex items-center px-0.5 py-2`}
+        className={styles.listItem}
       >
         <div
           {...toolTipContent}
@@ -36,7 +37,7 @@ const ListItem: React.FC<ListItemProps> = ({
             <Button label={item.label} icon={item.icon} onClick={item.onClick}/>
           ) : null}
         </div>
-        {tooltipText && <Tooltip id={toolTipId}/> }
+        {tooltipText && <Tooltip id={toolTipId} className="tooltip"/> }
       </li>
     );
   };

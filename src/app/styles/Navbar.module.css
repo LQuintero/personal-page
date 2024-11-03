@@ -1,0 +1,20 @@
+/* Navbar.module.css */
+.nav {
+    @apply p-4;
+}
+
+.navList {
+    @apply flex list-none m-0 p-0 justify-end;
+}
+
+.navItem {
+    @apply mr-6;
+}
+
+.navLink {
+    @apply text-lg cursor-pointer;
+}
+
+.navLinkActive {
+    @apply font-bold underline text-yellow-400; /* Added yellow color if required for active link */
+}

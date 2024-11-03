@@ -1,23 +1,21 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
-import Script from 'next/script';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faSquareGithub, faSquareXTwitter } from '@fortawesome/free-brands-svg-icons';
-// import { faSquareEnvelope, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faSquareEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 import Home from './components/HomePage';
 import { ListItemProps } from './types/ListItemProps';
+import Navbar from './components/Navbar';
+import { useNavigateTo } from './navigationHook';
 
 const App = () => {
-  const router = useRouter(); 
+
+  const navigateTo = useNavigateTo();
 
   const handleContactButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const targetId = (event.target as HTMLButtonElement).id;
-    console.log('Button clicked!', event, targetId);
-    
-    // Navigate to /contact when the button is clicked
-    router.push('/contact');
+    navigateTo('/contact');
   };
 
   const itemIconClassesShared = 'place-content-center';
@@ -49,45 +47,29 @@ const App = () => {
       tooltipPosition: tooltipPosition
     },
     {
-      type: 'link',
+      type: 'button',
       item: {
         id: '3',
-        icon: <FontAwesomeIcon id="github" icon={faSquareXTwitter} className={itemIconClassesShort} />,
-        uri: "https://x.com/LauraQuintero",
-        openInNewTab: true
+        icon: <FontAwesomeIcon id="contact" icon={faSquareEnvelope} className={itemIconClassesShort} />,
+        onClick: handleContactButtonClick
       },
-      tooltipText: 'Twitter',
+      tooltipText: 'Contact Me',
       tooltipPosition: tooltipPosition
-    },
-    // {
-    //   type: 'button',
-    //   item: {
-    //     id: '3',
-    //     icon: <FontAwesomeIcon id="contact" icon={faSquareEnvelope} className={itemIconClassesShort} />,
-    //     onClick: handleContactButtonClick
-    //   },
-    //   tooltipText: 'Contact Me',
-    //   tooltipPosition: tooltipPosition
-    // }
+    }
   ];
 
 
   return (
     <>
-    <Script
-            src="/particles/sketch.min.js"
-            strategy="lazyOnload"
-    />
-    <Script
-            src="/particles/particles.js"
-            strategy="lazyOnload"
-    />
+    <Navbar />
     <Home
       title="Laura Quintero"
       subtitle="Technologist"
       list={listItems}
     />
-    <div id="container"></div>
+    <div id="container">
+      
+    </div>
     </>
   );
 };
