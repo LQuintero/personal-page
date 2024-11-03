@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
+import { config } from '../../../config.js';
 
 const ContactForm: React.FC = () => {
   const [status, setStatus] = useState('');
@@ -21,11 +22,10 @@ const ContactForm: React.FC = () => {
     });
   };
 
-  const emailSvcId = process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID;
-  const emailTemplateId = process.env.NEXT_PUBLIC_EMAIL_TEMPLATE_ID;
-  if(!emailSvcId || !emailTemplateId) {
-    throw new Error('Email service id and template id are required');
-  }
+  const emailSvcId = process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID as string;
+  const emailTemplateId = process.env.NEXT_PUBLIC_EMAIL_TEMPLATE_ID as string;
+  const emailUserId = process.env.NEXT_PUBLIC_EMAIL_USER_ID as string;
+
   // Handle form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ const ContactForm: React.FC = () => {
     setStatus('Sending...');
     console.log("process.env.EMAIL_SERVICE_ID", process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID);
     emailjs
-      .send(emailSvcId, emailTemplateId, formData, process.env.NEXT_PUBLIC_EMAIL_USER_ID)
+      .send(emailSvcId, emailTemplateId, formData, emailUserId)
       .then(
         (response) => {
           console.log('Email sent successfully!', response.status, response.text);
