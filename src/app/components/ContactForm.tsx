@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
-import { config } from '../../../config.js';
+import { config } from '../../../config';
 
 const ContactForm: React.FC = () => {
   const [status, setStatus] = useState('');
@@ -33,7 +33,10 @@ const ContactForm: React.FC = () => {
     setStatus('Sending...');
     console.log("process.env.EMAIL_SERVICE_ID", process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID);
     emailjs
-      .send(emailSvcId, emailTemplateId, formData, emailUserId)
+      .send(
+        config.email.emailSvcId as string,
+        config.email.emailTemplateId as string, formData,
+        config.email.emailUserId as string)
       .then(
         (response) => {
           console.log('Email sent successfully!', response.status, response.text);

@@ -20,7 +20,7 @@ function validateEnvVars(obj: Record<string, any>, path = ''): void {
         // Recurse into nested objects
         validateEnvVars(value, fullPath);
       } else if (!value) {
-        throw new Error(`Missing environment variable: ${fullPath}`);
+        console.error(`Missing environment variable: ${fullPath}`);
       }
     }
   }
