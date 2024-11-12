@@ -5,12 +5,19 @@
 :root {
   --primary-text-rgb: 255, 255, 255;
   --background-rgb: 119, 125, 111;
-  --accent-dark-rgb: 93, 94, 91;
+	--accent-light-rgb1: 159, 165, 151;
+  --accent-light-rgb2: 160, 165, 150;
+  --accent-light-rgb3: 139, 145, 131;
+  --accent-dark-rgb1: 99, 105, 91;
+  --accent-dark-rgb2: 79, 85, 71;
 }
 
 body {
   color: rgb(var(--primary-text-rgb));
   background: rgb(var(--background-rgb));
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.5px; 
+  font-weight: 400;
 }
 
 @layer utilities {
@@ -20,5 +27,16 @@ body {
 }
 
 .tooltip {
-  background: rgb(var(--accent-dark-rgb)) !important;
+  background: rgb(var(--accent-light-rgb2)) !important;
+}
+
+.primary-button {
+  background: rgb(var(--accent-dark-rgb1));
+  color: rgb(var(--primary-text-rgb));
+  transition: background-color 0.3s ease;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  &:hover {
+    background: rgb(var(--accent-dark-rgb2));
+  }
 }

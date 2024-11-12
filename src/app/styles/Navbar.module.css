@@ -8,7 +8,7 @@
 }
 
 .navItem {
-    @apply mr-6;
+    @apply mr-6 hover:scale-125;
 }
 
 .navLink {
@@ -16,5 +16,5 @@
 }
 
 .navLinkActive {
-    @apply font-bold underline text-yellow-400; /* Added yellow color if required for active link */
+    @apply font-bold underline;
 }

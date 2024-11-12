@@ -13,12 +13,12 @@ const Navbar: React.FC = () => {
     <nav className={styles.nav}>
       <ul className={styles.navList}>
         <li className={styles.navItem}>
-          <a
+          {/* <a
             onClick={() => navigateTo('/')}
             className={pathname === '/' ? styles.navLinkActive : styles.link}
           >
             Home
-          </a>
+          </a> */}
         </li>
         <li className={styles.navItem}>
           <a

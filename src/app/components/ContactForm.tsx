@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
 import { config } from '../../../config';
+import styles from '../styles/ContactForm.module.css';
 
 const ContactForm: React.FC = () => {
   const [status, setStatus] = useState('');
@@ -22,16 +23,11 @@ const ContactForm: React.FC = () => {
     });
   };
 
-  const emailSvcId = process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID as string;
-  const emailTemplateId = process.env.NEXT_PUBLIC_EMAIL_TEMPLATE_ID as string;
-  const emailUserId = process.env.NEXT_PUBLIC_EMAIL_USER_ID as string;
-
   // Handle form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
     setStatus('Sending...');
-    console.log("process.env.EMAIL_SERVICE_ID", process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID);
     emailjs
       .send(
         config.email.emailSvcId as string,
@@ -59,10 +55,10 @@ const ContactForm: React.FC = () => {
 
   // Common styles for input and textarea
   const inputClasses = "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-black";
-  const labelClasses = "block text-sm font-medium text-gray-700";
+  const labelClasses = "block text-sm font-medium";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto p-6 border rounded-lg shadow-lg min-w-[448px]">
+    <form onSubmit={handleSubmit} className={styles.contactForm}>
       <div>
         <label htmlFor="firstName" className={labelClasses}>First Name</label>
         <input
@@ -131,7 +127,7 @@ const ContactForm: React.FC = () => {
       <div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+          className="primary-button"
         >
           Send
         </button>
