@@ -19,4 +19,4 @@ const LinkButton: React.FC<LinkButtonProps> = ({ id, uri, label, icon, openInNew
     );
 };
 
-export default LinkButton;
+export default React.memo(LinkButton);

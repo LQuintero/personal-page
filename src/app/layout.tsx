@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Oswald } from "next/font/google";
+import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
 import './styles/globals.css';
 
 const oswald = Oswald({ subsets: ["latin"] });
@@ -16,7 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={oswald.className}>{children}</body>
+      <body className={oswald.className}>
+        <ErrorBoundaryWrapper>
+          {children}
+        </ErrorBoundaryWrapper>
+      </body>
     </html>
   );
 }

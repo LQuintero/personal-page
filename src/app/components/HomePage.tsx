@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react';
-
 import { HomePageProps } from '../types/HomePageProps';
 import List from './List';
 import styles from '../styles/HomePage.module.css';
@@ -27,4 +26,4 @@ const Home: React.FC<HomePageProps> = ({ title, subtitle, list }) => {
   );
 };
 
-export default Home;
+export default React.memo(Home);

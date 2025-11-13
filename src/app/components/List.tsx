@@ -25,4 +25,4 @@ const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
   );
 };
 
-export default List;
+export default React.memo(List);

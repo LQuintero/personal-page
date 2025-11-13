@@ -7,6 +7,8 @@ import LinkButton from './LinkButton';
 import Button from './Button';
 import { ListItemProps } from '../types/ListItemProps';
 
+const DEFAULT_TOOLTIP_POSITION = 'top';
+
 const ListItem: React.FC<ListItemProps> = ({ 
   type, item, tooltipText, tooltipPosition
 }) => {
@@ -17,7 +19,7 @@ const ListItem: React.FC<ListItemProps> = ({
     ? `link-${item.uri}` 
     : `button-${item.label || 'default'}`);
   const toolTipId = `tooltip-${itemId}`;
-  const tooltipPlace = tooltipPosition || 'top'; 
+  const tooltipPlace = tooltipPosition || DEFAULT_TOOLTIP_POSITION; 
   if (tooltipText) {
     toolTipContent = {
       "data-tooltip-id": toolTipId,
@@ -44,4 +46,4 @@ const ListItem: React.FC<ListItemProps> = ({
     );
   };
   
-export default ListItem;
+export default React.memo(ListItem);
