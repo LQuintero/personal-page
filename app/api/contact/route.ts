@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     await sendEmail({
-      from: `${name || 'Website Contact'} <${email}>`,
+      from: `${name || 'Website Contact'} <me@lauraq.co>`,
       to: process.env.RESEND_TO_EMAIL || 'lauraqdev@gmail.com',
       replyTo: email,
       subject: `New message from ${name || 'someone fancy'}`,
