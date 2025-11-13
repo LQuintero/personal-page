@@ -23,8 +23,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('Contact API error:', err);
+    const errorMessage = err instanceof Error ? err.message : 'Failed to send email';
     return NextResponse.json(
-      { ok: false, error: 'Failed to send email' },
+      { ok: false, error: errorMessage },
       { status: 500 }
     );
   }
