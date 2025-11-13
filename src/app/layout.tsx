@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Oswald } from "next/font/google";
 import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
-import Footer from './components/Footer';
+import ConditionalFooter from './components/ConditionalFooter';
 import './styles/globals.css';
 
 const oswald = Oswald({ subsets: ["latin"] });
@@ -24,7 +24,7 @@ export default function RootLayout({
             <div className="flex-grow relative">
               {children}
             </div>
-            <Footer />
+            <ConditionalFooter />
           </div>
         </ErrorBoundaryWrapper>
       </body>

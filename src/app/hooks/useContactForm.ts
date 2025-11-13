@@ -3,7 +3,6 @@ import { useState } from 'react';
 export interface ContactFormData {
   name: string;
   email: string;
-  subject: string;
   message: string;
 }
 
@@ -19,7 +18,6 @@ export interface UseContactFormReturn {
 const initialFormData: ContactFormData = {
   name: '',
   email: '',
-  subject: '',
   message: ''
 };
 
