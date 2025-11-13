@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import Script from 'next/script';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -67,16 +68,21 @@ const App = () => {
   ];
 
 
+  const [sketchLoaded, setSketchLoaded] = React.useState(false);
+
   return (
     <ErrorBoundary>
       <Script
         src="/particles/sketch.min.js"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
+        onLoad={() => setSketchLoaded(true)}
       />
-      <Script
-        src="/particles/particles.js"
-        strategy="lazyOnload"
-      />
+      {sketchLoaded && (
+        <Script
+          src="/particles/particles.js"
+          strategy="afterInteractive"
+        />
+      )}
       <div id="container">
         <Home
           title="Laura Quintero"
