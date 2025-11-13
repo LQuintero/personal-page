@@ -5,7 +5,7 @@ import { useContactForm } from '@/hooks/useContactForm';
 
 // Style constants - update these in one place to change styles across the form
 const styles = {
-  container: 'max-w-3xl mx-auto px-12 py-6',
+  container: 'max-w-3xl mx-auto px-12 w-full',
   form: 'space-y-5 border border-gray-200 rounded-lg shadow-sm bg-white p-8',
   title: 'text-xl font-semibold text-gray-900 mb-6',
   label: 'block text-sm font-medium text-gray-600 mb-1.5',
