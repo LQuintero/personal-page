@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React from 'react';
 
 import { HomePageProps } from '../types/HomePageProps';
 import List from './List';

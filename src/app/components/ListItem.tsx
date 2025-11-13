@@ -12,7 +12,10 @@ const ListItem: React.FC<ListItemProps> = ({
 }) => {
   if (!item) return null;
   let toolTipContent = {};
-  const itemId = item.id ? item.id : Math.random().toString();
+  // Use item.id if available, otherwise generate a stable ID based on item properties
+  const itemId = item.id || (type === 'link' && 'uri' in item 
+    ? `link-${item.uri}` 
+    : `button-${item.label || 'default'}`);
   const toolTipId = `tooltip-${itemId}`;
   const tooltipPlace = tooltipPosition || 'top'; 
   if (tooltipText) {

@@ -13,9 +13,7 @@ const App = () => {
   const router = useRouter(); 
 
   const handleContactButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const targetId = (event.target as HTMLButtonElement).id;
-    console.log('Button clicked!', event, targetId);
-    
+    event.preventDefault();
     // Navigate to /contact when the button is clicked
     router.push('/contact');
   };
@@ -82,12 +80,13 @@ const App = () => {
             src="/particles/particles.js"
             strategy="lazyOnload"
     />
-    <Home
-      title="Laura Quintero"
-      subtitle="Technologist"
-      list={listItems}
-    />
-    <div id="container"></div>
+    <div id="container">
+      <Home
+        title="Laura Quintero"
+        subtitle="Technologist"
+        list={listItems}
+      />
+    </div>
     </>
   );
 };

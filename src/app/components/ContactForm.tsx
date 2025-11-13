@@ -19,10 +19,27 @@ const ContactForm: React.FC = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // You can process form data here (e.g., send to API)
     console.log('Form submitted:', formData);
+    
+    // TODO: Replace with actual API call
+    // try {
+    //   const response = await fetch('/api/contact', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(formData),
+    //   });
+    //   if (response.ok) {
+    //     alert('Message sent successfully!');
+    //     setFormData({ name: '', email: '', subject: '', message: '' });
+    //   }
+    // } catch (error) {
+    //   alert('Failed to send message. Please try again.');
+    // }
+    
+    // Temporary: Show success message
     alert('Message sent successfully!');
     
     // Reset form after submission

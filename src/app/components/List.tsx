@@ -13,9 +13,9 @@ const List: React.FC<ListProps> = ({ items, isHorizontal }) => {
   const listDirection = isHorizontal ? 'flex-row' : 'flex-col';
   return (
     <ul className={`list-none p-0 flex mt-4 ${listDirection}`}>
-      {items.map((item, index) => (
+      {items.map((item) => (
         <ListItem
-          key={index}
+          key={item.item?.id || `list-item-${item.type}-${item.item?.uri || 'button'}`}
           {...(item.type === 'link'
             ? { ...item as ListItemLinkProps }
             : { ...item as ListItemButtonProps })}

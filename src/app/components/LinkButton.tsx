@@ -9,10 +9,11 @@ const LinkButton: React.FC<LinkButtonProps> = ({ id, uri, label, icon, openInNew
             id={id}
             href={uri}
             target={target}
-            className="flex items-center p-2 hover:scale-125"
+            rel={openInNewTab ? 'noopener noreferrer' : undefined}
+            className="flex items-center p-2 hover:scale-125 transition-transform"
             aria-label={ariaLabelDefault}
         >
-         {icon && <span className="">{icon}</span>}
+         {icon && <span className="" aria-hidden="true">{icon}</span>}
          {label && <span id='linkBtnLabel' className="ml-2">{label}</span>}
         </a>
     );

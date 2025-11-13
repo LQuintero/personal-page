@@ -1,7 +1,7 @@
 export interface ButtonProps {
   id?: string;
   icon?: React.ReactNode;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   label?: string;
 }
 
