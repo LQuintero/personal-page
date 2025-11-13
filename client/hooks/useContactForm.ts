@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export interface ContactFormData {
   name: string;
@@ -10,6 +10,7 @@ export interface UseContactFormReturn {
   formData: ContactFormData;
   isLoading: boolean;
   error: string | null;
+  success: boolean;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   resetForm: () => void;
@@ -21,10 +22,13 @@ const initialFormData: ContactFormData = {
   message: ''
 };
 
+const SUCCESS_MESSAGE_DURATION = 3000;
+
 export const useContactForm = (): UseContactFormReturn => {
   const [formData, setFormData] = useState<ContactFormData>(initialFormData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -39,7 +43,18 @@ export const useContactForm = (): UseContactFormReturn => {
   const resetForm = () => {
     setFormData(initialFormData);
     setError(null);
+    setSuccess(false);
   };
+
+  // Auto-hide success message after duration
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(false);
+      }, SUCCESS_MESSAGE_DURATION);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,9 +75,7 @@ export const useContactForm = (): UseContactFormReturn => {
       }
 
       resetForm();
-      
-      // Return success - parent component can handle notification
-      return;
+      setSuccess(true);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to send message. Please try again.';
       setError(errorMessage);
@@ -75,6 +88,7 @@ export const useContactForm = (): UseContactFormReturn => {
     formData,
     isLoading,
     error,
+    success,
     handleChange,
     handleSubmit,
     resetForm

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { useContactForm } from '@/hooks/useContactForm';
 
 // Style constants - update these in one place to change styles across the form
@@ -19,38 +19,15 @@ const styles = {
 };
 
 const ContactForm: React.FC = () => {
-  const { formData, isLoading, error, handleChange, handleSubmit } = useContactForm();
-  const [showSuccess, setShowSuccess] = useState(false);
-  const previousLoadingRef = useRef(false);
-
-  // Watch for successful submission (when loading goes from true to false without error)
-  useEffect(() => {
-    if (previousLoadingRef.current && !isLoading && !error) {
-      // Form was just submitted successfully
-      const isFormEmpty = !formData.name && !formData.email && !formData.message;
-      if (isFormEmpty) {
-        setShowSuccess(true);
-        const timer = setTimeout(() => {
-          setShowSuccess(false);
-        }, 3000);
-        return () => clearTimeout(timer);
-      }
-    }
-    previousLoadingRef.current = isLoading;
-  }, [isLoading, error, formData]);
-
-  // Handle successful submission
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    await handleSubmit(e);
-  };
+  const { formData, isLoading, error, success, handleChange, handleSubmit } = useContactForm();
 
   return (
     <div className={styles.container}>
-      <form onSubmit={onSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <h1 className={styles.title}>Say hello</h1>
         
-        {showSuccess && (
-          <div className={styles.alert.success}>
+        {success && (
+          <div className={styles.alert.success} role="alert">
             Message sent successfully!
           </div>
         )}
