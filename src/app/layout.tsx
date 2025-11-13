@@ -17,11 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={oswald.className}>
+    <html lang="en" className="h-full">
+      <body className={`${oswald.className} min-h-screen flex flex-col`}>
         <ErrorBoundaryWrapper>
-          {children}
-          <Footer />
+          <div className="flex flex-col min-h-screen relative">
+            <div className="flex-grow relative">
+              {children}
+            </div>
+            <Footer />
+          </div>
         </ErrorBoundaryWrapper>
       </body>
     </html>
