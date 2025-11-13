@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useContactForm } from '../hooks/useContactForm';
+import { useContactForm } from '@/hooks/useContactForm';
 
 // Style constants - update these in one place to change styles across the form
 const styles = {

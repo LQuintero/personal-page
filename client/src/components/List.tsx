@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ListItem from './ListItem';
-import { ListItemProps, ListItemLinkProps, ListItemButtonProps } from '../types/ListItemProps';
+import { ListItemProps, ListItemLinkProps, ListItemButtonProps } from '@/types/ListItemProps';
 
 interface ListProps {
   items: ListItemProps[];

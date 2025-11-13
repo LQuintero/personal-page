@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import ContactForm  from '../components/ContactForm';
-import NavBar from '../components/NavBar';
+import ContactForm  from '@/components/ContactForm';
+import NavBar from '@/components/NavBar';
 
 const Contact = () => (
   <>

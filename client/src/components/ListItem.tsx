@@ -5,7 +5,7 @@ import { Tooltip } from 'react-tooltip';
 
 import LinkButton from './LinkButton';
 import Button from './Button';
-import { ListItemProps } from '../types/ListItemProps';
+import { ListItemProps } from '@/types/ListItemProps';
 
 const DEFAULT_TOOLTIP_POSITION = 'top';
 

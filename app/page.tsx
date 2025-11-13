@@ -7,10 +7,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faSquareGithub, faSquareXTwitter } from '@fortawesome/free-brands-svg-icons';
 // import { faSquareEnvelope, faFile } from '@fortawesome/free-solid-svg-icons';
 
-import Home from './components/HomePage';
-import ErrorBoundary from './components/ErrorBoundary';
-import { ListItemProps } from './types/ListItemProps';
-import { ITEM_ICON_CLASSES_SHORT, TOOLTIP_POSITION } from './constants/iconClasses';
+import Home from '@/components/HomePage';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { ListItemProps } from '@/types/ListItemProps';
+import { ITEM_ICON_CLASSES_SHORT, TOOLTIP_POSITION } from '@/constants/iconClasses';
 
 const App = () => {
   const router = useRouter(); 

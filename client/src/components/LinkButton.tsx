@@ -1,5 +1,5 @@
 import React from 'react';
-import { LinkButtonProps } from '../types/ButtonProps';
+import { LinkButtonProps } from '@/types/ButtonProps';
 
 const LinkButton: React.FC<LinkButtonProps> = ({ id, uri, label, icon, openInNewTab }) => {
     const target = openInNewTab ? '_blank' : '_self';

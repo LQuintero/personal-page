@@ -47,21 +47,18 @@ export const useContactForm = (): UseContactFormReturn => {
     setError(null);
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
       
-      // if (!response.ok) {
-      //   throw new Error('Failed to send message');
-      // }
+      const data = await response.json();
+      
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
 
-      // Simulate API call for now
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      console.log('Form submitted:', formData);
       resetForm();
       
       // Return success - parent component can handle notification
