@@ -33,7 +33,9 @@ export async function sendEmail({ from, to, replyTo, subject, text }: SendEmailP
     });
     return { success: true };
   } catch (error) {
+    // Log full error details server-side for debugging
     console.error('Email service error:', error);
+    // Throw generic error - will be sanitized by error handler in API route
     throw new Error('Failed to send email');
   }
 }
