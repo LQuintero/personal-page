@@ -29,9 +29,27 @@ export async function POST(request: NextRequest) {
 
     const { name, email, message } = await request.json();
 
-    if (!name || !email || !message) {
+    // Validate required fields with sanitized error messages
+    if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return NextResponse.json(
-        { ok: false, error: 'Missing required fields' },
+        { ok: false, error: 'All fields are required. Please fill in your name, email, and message.' },
+        { status: 400 }
+      );
+    }
+
+    // Basic email validation (additional validation can be added with zod)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return NextResponse.json(
+        { ok: false, error: 'Please enter a valid email address.' },
+        { status: 400 }
+      );
+    }
+
+    // Prevent excessively long inputs that might cause issues
+    if (name.length > 100 || email.length > 254 || message.length > 5000) {
+      return NextResponse.json(
+        { ok: false, error: 'One or more fields exceed the maximum length allowed.' },
         { status: 400 }
       );
     }

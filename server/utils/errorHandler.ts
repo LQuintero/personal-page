@@ -14,6 +14,10 @@ const SAFE_ERROR_MESSAGES = {
   SERVER_ERROR: 'An error occurred. Please try again later.',
   RATE_LIMIT_ERROR: 'Too many requests. Please try again later.',
   NETWORK_ERROR: 'Network error. Please check your connection and try again.',
+  AUTH_ERROR: 'Authentication failed. Please try again.',
+  FORBIDDEN_ERROR: 'Access denied.',
+  NOT_FOUND_ERROR: 'Resource not found.',
+  TIMEOUT_ERROR: 'Request timed out. Please try again.',
 } as const;
 
 /**
@@ -49,25 +53,63 @@ export function sanitizeErrorMessage(error: unknown, context?: string): string {
     // Check for specific error types and return appropriate safe messages
     const errorMessage = error.message.toLowerCase();
     
-    if (errorMessage.includes('validation') || errorMessage.includes('invalid')) {
+    if (errorMessage.includes('validation') || errorMessage.includes('invalid') || errorMessage.includes('required')) {
       return SAFE_ERROR_MESSAGES.VALIDATION_ERROR;
     }
     
-    if (errorMessage.includes('email') || errorMessage.includes('resend')) {
+    if (errorMessage.includes('email') || errorMessage.includes('resend') || errorMessage.includes('smtp')) {
       return SAFE_ERROR_MESSAGES.EMAIL_SEND_ERROR;
     }
     
-    if (errorMessage.includes('rate limit') || errorMessage.includes('too many')) {
+    if (errorMessage.includes('rate limit') || errorMessage.includes('too many') || errorMessage.includes('throttle')) {
       return SAFE_ERROR_MESSAGES.RATE_LIMIT_ERROR;
     }
     
-    if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+    if (errorMessage.includes('network') || errorMessage.includes('fetch') || errorMessage.includes('connection')) {
       return SAFE_ERROR_MESSAGES.NETWORK_ERROR;
+    }
+    
+    if (errorMessage.includes('auth') || errorMessage.includes('unauthorized') || errorMessage.includes('token')) {
+      return SAFE_ERROR_MESSAGES.AUTH_ERROR;
+    }
+    
+    if (errorMessage.includes('forbidden') || errorMessage.includes('access denied')) {
+      return SAFE_ERROR_MESSAGES.FORBIDDEN_ERROR;
+    }
+    
+    if (errorMessage.includes('not found') || errorMessage.includes('404')) {
+      return SAFE_ERROR_MESSAGES.NOT_FOUND_ERROR;
+    }
+    
+    if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
+      return SAFE_ERROR_MESSAGES.TIMEOUT_ERROR;
     }
   }
 
   // Default safe error message
   return SAFE_ERROR_MESSAGES.SERVER_ERROR;
+}
+
+/**
+ * Production-safe logging function
+ * In production, should be replaced with proper logging service (e.g., Sentry, LogRocket)
+ */
+function logError(error: unknown, context?: string, logDetails?: any) {
+  if (isDevelopment) {
+    console.error(`[${context || 'API'}] Error:`, logDetails);
+  } else {
+    // In production, use structured logging
+    // Replace console.error with your logging service
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: 'error',
+      context: context || 'API',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      // Don't log stack traces in production for security
+      ...(process.env.LOG_STACK_TRACES === 'true' && error instanceof Error && { stack: error.stack }),
+      environment: process.env.NODE_ENV,
+    }));
+  }
 }
 
 /**
@@ -82,8 +124,8 @@ export function handleError(error: unknown, context?: string): {
     ? { message: error.message, stack: error.stack, context }
     : { error, context };
 
-  // Log full error details server-side
-  console.error(`[${context || 'API'}] Error:`, logDetails);
+  // Log full error details server-side with production-safe logging
+  logError(error, context, logDetails);
 
   return {
     message: sanitizedMessage,

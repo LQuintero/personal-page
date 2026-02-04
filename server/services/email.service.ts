@@ -24,6 +24,12 @@ export interface SendEmailParams {
 export async function sendEmail({ from, to, replyTo, subject, text }: SendEmailParams) {
   try {
     const client = getResendClient();
+    
+    // Validate input to prevent any potential data leaks
+    if (!from || !to || !subject) {
+      throw new Error('Email validation failed: Missing required fields');
+    }
+    
     await client.emails.send({
       from,
       to,
@@ -33,10 +39,22 @@ export async function sendEmail({ from, to, replyTo, subject, text }: SendEmailP
     });
     return { success: true };
   } catch (error) {
-    // Log full error details server-side for debugging
-    console.error('Email service error:', error);
+    // Don't log the actual email content for privacy
+    const logContext = {
+      from: from?.split('@')[1] || 'unknown', // Only log domain, not full email
+      to: to?.split('@')[1] || 'unknown',     // Only log domain, not full email
+      hasSubject: !!subject,
+      hasText: !!text,
+    };
+    
+    // In production, this will be handled by the error handler in the API route
+    // which will sanitize the error message appropriately
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Email service error:', { error, context: logContext });
+    }
+    
     // Throw generic error - will be sanitized by error handler in API route
-    throw new Error('Failed to send email');
+    throw new Error('Email service failed to send message');
   }
 }
 

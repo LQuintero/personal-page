@@ -77,7 +77,22 @@ export const useContactForm = (): UseContactFormReturn => {
       resetForm();
       setSuccess(true);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send message. Please try again.';
+      // Sanitize error messages on client side as well for extra security
+      let errorMessage = 'Failed to send message. Please try again.';
+      
+      if (err instanceof Error) {
+        const message = err.message.toLowerCase();
+        // Only allow specific, safe error messages through
+        if (message.includes('too many requests')) {
+          errorMessage = 'Too many requests. Please try again later.';
+        } else if (message.includes('invalid input') || message.includes('check your information')) {
+          errorMessage = 'Please check your information and try again.';
+        } else if (message.includes('network') || message.includes('connection')) {
+          errorMessage = 'Network error. Please check your connection and try again.';
+        }
+        // For any other error, use the generic message set above
+      }
+      
       setError(errorMessage);
     } finally {
       setIsLoading(false);
