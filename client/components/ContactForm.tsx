@@ -19,8 +19,11 @@ const styles = {
 };
 
 const ContactForm: React.FC = () => {
-  const { formData, isLoading, error, success, handleChange, handleSubmit } = useContactForm();
-
+  const { formData, isLoading, errors, success, handleChange, handleSubmit } = useContactForm();
+  
+  const MESSAGE_MAX_LENGTH = 1000;
+  const NAME_MAX_LENGTH = 100;
+  
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -32,9 +35,9 @@ const ContactForm: React.FC = () => {
           </div>
         )}
         
-        {error && (
+        {errors.general && (
           <div className={styles.alert.error}>
-            {error}
+            {errors.general}
           </div>
         )}
 
@@ -47,10 +50,20 @@ const ContactForm: React.FC = () => {
             placeholder="Who am I speaking to?"
             value={formData.name}
             onChange={handleChange}
-            className={styles.input}
-            required
+            className={`${styles.input} ${errors.name ? 'border-red-300 focus:ring-red-400 focus:border-red-400' : ''}`}
+            maxLength={NAME_MAX_LENGTH}
+            aria-describedby={errors.name ? 'name-error' : undefined}
+            aria-invalid={!!errors.name}
             disabled={isLoading}
           />
+          {errors.name && (
+            <div id="name-error" className="text-red-600 text-sm mt-1" role="alert">
+              {errors.name}
+            </div>
+          )}
+          <div className="text-gray-500 text-xs mt-1">
+            {formData.name.length}/{NAME_MAX_LENGTH} characters
+          </div>
         </div>
         
         <div>
@@ -62,10 +75,17 @@ const ContactForm: React.FC = () => {
             value={formData.email}
             placeholder="Where can I write you back?"
             onChange={handleChange}
-            className={styles.input}
-            required
+            className={`${styles.input} ${errors.email ? 'border-red-300 focus:ring-red-400 focus:border-red-400' : ''}`}
+            maxLength={254}
+            aria-describedby={errors.email ? 'email-error' : undefined}
+            aria-invalid={!!errors.email}
             disabled={isLoading}
           />
+          {errors.email && (
+            <div id="email-error" className="text-red-600 text-sm mt-1" role="alert">
+              {errors.email}
+            </div>
+          )}
         </div>
 
         <div>
@@ -76,11 +96,25 @@ const ContactForm: React.FC = () => {
             placeholder="Tell me everything"
             value={formData.message}
             onChange={handleChange}
-            className={styles.textarea}
+            className={`${styles.textarea} ${errors.message ? 'border-red-300 focus:ring-red-400 focus:border-red-400' : ''}`}
             rows={5}
-            required
+            maxLength={MESSAGE_MAX_LENGTH}
+            aria-describedby={errors.message ? 'message-error' : 'message-help'}
+            aria-invalid={!!errors.message}
             disabled={isLoading}
           ></textarea>
+          {errors.message && (
+            <div id="message-error" className="text-red-600 text-sm mt-1" role="alert">
+              {errors.message}
+            </div>
+          )}
+          <div id="message-help" className={`text-xs mt-1 flex justify-between ${
+            formData.message.length > MESSAGE_MAX_LENGTH * 0.9 ? 'text-orange-600' : 
+            formData.message.length > MESSAGE_MAX_LENGTH * 0.8 ? 'text-yellow-600' : 'text-gray-500'
+          }`}>
+            <span>Minimum 10 characters required</span>
+            <span>{formData.message.length}/{MESSAGE_MAX_LENGTH} characters</span>
+          </div>
         </div>
 
         <div className="pt-2">

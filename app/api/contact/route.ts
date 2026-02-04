@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '@/server/services/email.service';
 import { handleError } from '@/server/utils/errorHandler';
 import { checkRateLimit } from '@/server/utils/rateLimiter';
+import { validateContactForm } from '@/shared/validators/contact.validator';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,32 +28,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, email, message } = await request.json();
+    const body = await request.json();
 
-    // Validate required fields with sanitized error messages
-    if (!name?.trim() || !email?.trim() || !message?.trim()) {
+    // Validate the request body using Zod schema
+    const validation = validateContactForm(body);
+    
+    if (!validation.success) {
+      const firstError = validation.error.issues[0];
       return NextResponse.json(
-        { ok: false, error: 'All fields are required. Please fill in your name, email, and message.' },
+        { 
+          ok: false, 
+          error: firstError.message,
+          field: firstError.path[0], // Include which field has the error
+        },
         { status: 400 }
       );
     }
 
-    // Basic email validation (additional validation can be added with zod)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      return NextResponse.json(
-        { ok: false, error: 'Please enter a valid email address.' },
-        { status: 400 }
-      );
-    }
-
-    // Prevent excessively long inputs that might cause issues
-    if (name.length > 100 || email.length > 254 || message.length > 5000) {
-      return NextResponse.json(
-        { ok: false, error: 'One or more fields exceed the maximum length allowed.' },
-        { status: 400 }
-      );
-    }
+    const { name, email, message } = validation.data;
 
     const recipientEmail = process.env.RESEND_TO_EMAIL || 'me@lauraq.co';
 
