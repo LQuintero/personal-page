@@ -17,7 +17,7 @@ const Footer = () => {
             href="https://codepen.io/soulwire/pen/DPMBjA" 
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-500 hover:text-white transition-colors duration-200"
+            className="text-gray-500 hover:text-white transition-colors duration-200 text-xs"
           >
             Particles
           </Link>

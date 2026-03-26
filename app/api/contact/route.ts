@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     const recipientEmail = process.env.RESEND_TO_EMAIL || 'me@lauraq.co';
 
     await sendEmail({
-      from: `Laura Q Web <${recipientEmail}>`,
+      from: `Laura Q Web <website@lauraq.co>`,
       to: recipientEmail,
       replyTo: email,
       subject: `New message from ${name || 'someone fancy'}`,
