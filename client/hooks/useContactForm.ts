@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ContactFormData, validateContactForm } from '@/shared/validators/contact.validator';
 
 export interface FormErrors {
@@ -32,6 +32,7 @@ export const useContactForm = (): UseContactFormReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [success, setSuccess] = useState(false);
+  const validationTimers = useRef<Partial<Record<keyof ContactFormData, ReturnType<typeof setTimeout>>>>({});
 
   const validateField = (fieldName: keyof ContactFormData, value: string): string | undefined => {
     const result = validateContactForm({ ...formData, [fieldName]: value });
@@ -42,36 +43,58 @@ export const useContactForm = (): UseContactFormReturn => {
     return undefined;
   };
 
+  const clearValidationTimer = (fieldName: keyof ContactFormData) => {
+    const existingTimer = validationTimers.current[fieldName];
+
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+      delete validationTimers.current[fieldName];
+    }
+  };
+
+  const clearValidationTimers = () => {
+    Object.values(validationTimers.current).forEach((timer) => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    });
+    validationTimers.current = {};
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    const fieldName = name as keyof ContactFormData;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
     
     // Clear field-specific error when user starts typing
-    if (errors[name as keyof FormErrors]) {
+    if (errors[fieldName]) {
       setErrors(prev => ({
         ...prev,
-        [name]: undefined
+        [fieldName]: undefined
       }));
     }
-    
-    // Real-time validation for better UX (only show errors after user stops typing)
+
+    clearValidationTimer(fieldName);
+    // Real-time validation for better UX after the user pauses typing.
     if (value.length > 0) {
-      const fieldError = validateField(name as keyof ContactFormData, value);
-      if (fieldError) {
-        setTimeout(() => {
+      validationTimers.current[fieldName] = setTimeout(() => {
+        const fieldError = validateField(fieldName, value);
+        if (fieldError) {
           setErrors(prev => ({
             ...prev,
-            [name]: fieldError
+            [fieldName]: fieldError
           }));
-        }, 1000); // Debounce validation
-      }
+        }
+      }, 1000);
     }
   };
 
   const resetForm = () => {
+    clearValidationTimers();
     setFormData(initialFormData);
     setErrors({});
     setSuccess(false);
@@ -86,6 +109,16 @@ export const useContactForm = (): UseContactFormReturn => {
       return () => clearTimeout(timer);
     }
   }, [success]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(validationTimers.current).forEach((timer) => {
+        if (timer) {
+          clearTimeout(timer);
+        }
+      });
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

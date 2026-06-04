@@ -1,8 +1,6 @@
-'use client';
-
 import Link from 'next/link';
 
-const NavBar: React.FC = () => {
+export default function NavBar() {
   return (
     <nav className="w-full py-4 px-6">
       <div className="max-w-7xl mx-auto">
@@ -15,7 +13,5 @@ const NavBar: React.FC = () => {
       </div>
     </nav>
   );
-};
-
-export default NavBar;
+}
 

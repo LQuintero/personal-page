@@ -1,14 +1,11 @@
-'use client'
-
-import React from 'react';
 import { HomePageProps } from '@/types/HomePageProps';
 import List from './List';
 import styles from '@/styles/HomePage.module.css';
 
-const Home: React.FC<HomePageProps> = ({ title, subtitle, list }) => {
+export default function Home({ title, subtitle, list }: HomePageProps) {
   return (
     <main
-    className={`${styles.main} flex flex-col items-center p-24`}
+      className={`${styles.main} flex flex-col items-center p-24`}
     >
       <div>
         <h1 className='text-7xl font-bold text-center tracking-wide mt-8'>
@@ -24,6 +21,4 @@ const Home: React.FC<HomePageProps> = ({ title, subtitle, list }) => {
       </div>
     </main>
   );
-};
-
-export default React.memo(Home);
+}

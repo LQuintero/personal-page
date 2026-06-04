@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Oswald } from "next/font/google";
-import ErrorBoundaryWrapper from '@/components/ErrorBoundaryWrapper';
 import ConditionalFooter from '@/components/ConditionalFooter';
 import '@/styles/globals.css';
 
@@ -19,14 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={`${oswald.className} min-h-screen flex flex-col`}>
-        <ErrorBoundaryWrapper>
-          <div className="flex flex-col min-h-screen relative">
-            <div className="flex-grow relative">
-              {children}
-            </div>
-            <ConditionalFooter />
+        <div className="flex flex-col min-h-screen relative">
+          <div className="flex-grow relative">
+            {children}
           </div>
-        </ErrorBoundaryWrapper>
+          <ConditionalFooter />
+        </div>
       </body>
     </html>
   );

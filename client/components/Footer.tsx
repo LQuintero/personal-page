@@ -1,8 +1,6 @@
-'use client'
-
 import Link from 'next/link';
 
-const Footer = () => {
+export default function Footer() {
   return (
     <footer className="w-full py-4 px-6 absolute bottom-0">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -28,7 +26,5 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
 
