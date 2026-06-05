@@ -1,12 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ContactFormData, validateContactForm } from '@/shared/validators/contact.validator';
 
-export interface FormErrors {
-  name?: string;
-  email?: string;
-  message?: string;
-  general?: string;
-}
+export type FormErrors = Partial<Record<keyof ContactFormData, string>> & { general?: string };
 
 export interface UseContactFormReturn {
   formData: ContactFormData;
@@ -16,8 +11,9 @@ export interface UseContactFormReturn {
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   resetForm: () => void;
-  validateField: (fieldName: keyof ContactFormData, value: string) => string | undefined;
 }
+
+type ZodIssueLike = { path: (string | number)[]; message: string };
 
 const initialFormData: ContactFormData = {
   name: '',
@@ -37,7 +33,9 @@ export const useContactForm = (): UseContactFormReturn => {
   const validateField = (fieldName: keyof ContactFormData, value: string): string | undefined => {
     const result = validateContactForm({ ...formData, [fieldName]: value });
     if (!result.success) {
-      const fieldError = result.error.issues.find(issue => issue.path[0] === fieldName);
+      const fieldError = result.error.issues.find(
+        (issue: ZodIssueLike) => issue.path[0] === fieldName
+      );
       return fieldError?.message;
     }
     return undefined;
@@ -45,7 +43,6 @@ export const useContactForm = (): UseContactFormReturn => {
 
   const clearValidationTimer = (fieldName: keyof ContactFormData) => {
     const existingTimer = validationTimers.current[fieldName];
-
     if (existingTimer) {
       clearTimeout(existingTimer);
       delete validationTimers.current[fieldName];
@@ -54,9 +51,7 @@ export const useContactForm = (): UseContactFormReturn => {
 
   const clearValidationTimers = () => {
     Object.values(validationTimers.current).forEach((timer) => {
-      if (timer) {
-        clearTimeout(timer);
-      }
+      if (timer) clearTimeout(timer);
     });
     validationTimers.current = {};
   };
@@ -65,29 +60,18 @@ export const useContactForm = (): UseContactFormReturn => {
     const { name, value } = e.target;
     const fieldName = name as keyof ContactFormData;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    // Clear field-specific error when user starts typing
+    setFormData((prev: ContactFormData) => ({ ...prev, [name]: value }));
+
     if (errors[fieldName]) {
-      setErrors(prev => ({
-        ...prev,
-        [fieldName]: undefined
-      }));
+      setErrors((prev: FormErrors) => ({ ...prev, [fieldName]: undefined }));
     }
 
     clearValidationTimer(fieldName);
-    // Real-time validation for better UX after the user pauses typing.
     if (value.length > 0) {
       validationTimers.current[fieldName] = setTimeout(() => {
         const fieldError = validateField(fieldName, value);
         if (fieldError) {
-          setErrors(prev => ({
-            ...prev,
-            [fieldName]: fieldError
-          }));
+          setErrors((prev: FormErrors) => ({ ...prev, [fieldName]: fieldError }));
         }
       }, 1000);
     }
@@ -100,24 +84,15 @@ export const useContactForm = (): UseContactFormReturn => {
     setSuccess(false);
   };
 
-  // Auto-hide success message after duration
   useEffect(() => {
     if (success) {
-      const timer = setTimeout(() => {
-        setSuccess(false);
-      }, SUCCESS_MESSAGE_DURATION);
+      const timer = setTimeout(() => setSuccess(false), SUCCESS_MESSAGE_DURATION);
       return () => clearTimeout(timer);
     }
   }, [success]);
 
   useEffect(() => {
-    return () => {
-      Object.values(validationTimers.current).forEach((timer) => {
-        if (timer) {
-          clearTimeout(timer);
-        }
-      });
-    };
+    return () => clearValidationTimers();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -125,11 +100,10 @@ export const useContactForm = (): UseContactFormReturn => {
     setIsLoading(true);
     setErrors({});
 
-    // Client-side validation before submitting
     const validation = validateContactForm(formData);
     if (!validation.success) {
       const fieldErrors: FormErrors = {};
-      validation.error.issues.forEach(issue => {
+      validation.error.issues.forEach((issue: ZodIssueLike) => {
         const fieldName = issue.path[0] as keyof ContactFormData;
         if (!fieldErrors[fieldName]) {
           fieldErrors[fieldName] = issue.message;
@@ -146,11 +120,10 @@ export const useContactForm = (): UseContactFormReturn => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok || !data.ok) {
-        // Handle field-specific errors from server
         if (data.field) {
           setErrors({ [data.field]: data.error });
         } else {
@@ -162,12 +135,10 @@ export const useContactForm = (): UseContactFormReturn => {
       resetForm();
       setSuccess(true);
     } catch (err) {
-      // Sanitize error messages on client side as well for extra security
       let errorMessage = 'Failed to send message. Please try again.';
-      
+
       if (err instanceof Error) {
         const message = err.message.toLowerCase();
-        // Only allow specific, safe error messages through
         if (message.includes('too many requests')) {
           errorMessage = 'Too many requests. Please try again later.';
         } else if (message.includes('invalid input') || message.includes('check your information')) {
@@ -175,9 +146,8 @@ export const useContactForm = (): UseContactFormReturn => {
         } else if (message.includes('network') || message.includes('connection')) {
           errorMessage = 'Network error. Please check your connection and try again.';
         }
-        // For any other error, use the generic message set above
       }
-      
+
       setErrors({ general: errorMessage });
     } finally {
       setIsLoading(false);
@@ -192,7 +162,5 @@ export const useContactForm = (): UseContactFormReturn => {
     handleChange,
     handleSubmit,
     resetForm,
-    validateField
   };
 };
-

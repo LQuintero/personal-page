@@ -14,7 +14,7 @@ export default function LinkButton({ id, uri, label, icon, openInNewTab }: LinkB
       aria-label={ariaLabelDefault}
     >
       {icon && <span aria-hidden="true">{icon}</span>}
-      {label && <span id="linkBtnLabel" className="ml-2">{label}</span>}
+      {label && <span className="ml-2">{label}</span>}
     </a>
   );
 }

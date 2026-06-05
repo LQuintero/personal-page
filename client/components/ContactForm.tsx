@@ -36,7 +36,7 @@ const ContactForm: React.FC = () => {
         )}
         
         {errors.general && (
-          <div className={styles.alert.error}>
+          <div className={styles.alert.error} role="alert">
             {errors.general}
           </div>
         )}
