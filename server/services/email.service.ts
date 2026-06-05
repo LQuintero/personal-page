@@ -30,31 +30,34 @@ export async function sendEmail({ from, to, replyTo, subject, text }: SendEmailP
       throw new Error('Email validation failed: Missing required fields');
     }
     
-    await client.emails.send({
+    const { error: sendError } = await client.emails.send({
       from,
       to,
       replyTo,
       subject,
       text,
     });
+
+    if (sendError) {
+      throw new Error(sendError.message, { cause: sendError });
+    }
+
     return { success: true };
   } catch (error) {
-    // Don't log the actual email content for privacy
     const logContext = {
-      from: from?.split('@')[1] || 'unknown', // Only log domain, not full email
-      to: to?.split('@')[1] || 'unknown',     // Only log domain, not full email
+      from: from?.split('@')[1] || 'unknown',
+      to: to?.split('@')[1] || 'unknown',
       hasSubject: !!subject,
       hasText: !!text,
     };
-    
-    // In production, this will be handled by the error handler in the API route
-    // which will sanitize the error message appropriately
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Email service error:', { error, context: logContext });
-    }
-    
-    // Throw generic error - will be sanitized by error handler in API route
-    throw new Error('Email service failed to send message');
+
+    console.error('Email service error:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      cause: error instanceof Error ? error.cause : undefined,
+      context: logContext,
+    });
+
+    throw new Error('Email service failed to send message', { cause: error });
   }
 }
 
