@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Oswald } from "next/font/google";
 import ConditionalFooter from '@/components/ConditionalFooter';
+import siteConfig from '@/site.config';
 import '@/styles/globals.css';
 
 const oswald = Oswald({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Laura Quintero",
-  description: "More about me",
+  title: siteConfig.metadata.title,
+  description: siteConfig.metadata.description,
 };
 
 export default function RootLayout({

@@ -47,10 +47,15 @@ export async function POST(request: NextRequest) {
 
     const { name, email, message } = validation.data;
 
-    const recipientEmail = process.env.RESEND_TO_EMAIL || 'me@lauraq.co';
+    const fromEmail = process.env.RESEND_FROM_EMAIL;
+    const recipientEmail = process.env.RESEND_TO_EMAIL;
+
+    if (!fromEmail || !recipientEmail) {
+      throw new Error('RESEND_FROM_EMAIL and RESEND_TO_EMAIL environment variables are required');
+    }
 
     await sendEmail({
-      from: `Laura Q Web <website@lauraq.co>`,
+      from: fromEmail,
       to: recipientEmail,
       replyTo: email,
       subject: `New message from ${name || 'someone fancy'}`,
