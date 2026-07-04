@@ -13,8 +13,6 @@ export interface UseContactFormReturn {
   resetForm: () => void;
 }
 
-type ZodIssueLike = { path: (string | number)[]; message: string };
-
 const initialFormData: ContactFormData = {
   name: '',
   email: '',
@@ -34,7 +32,7 @@ export const useContactForm = (): UseContactFormReturn => {
     const result = validateContactForm({ ...formData, [fieldName]: value });
     if (!result.success) {
       const fieldError = result.error.issues.find(
-        (issue: ZodIssueLike) => issue.path[0] === fieldName
+        (issue) => issue.path[0] === fieldName
       );
       return fieldError?.message;
     }
@@ -103,7 +101,7 @@ export const useContactForm = (): UseContactFormReturn => {
     const validation = validateContactForm(formData);
     if (!validation.success) {
       const fieldErrors: FormErrors = {};
-      validation.error.issues.forEach((issue: ZodIssueLike) => {
+      validation.error.issues.forEach((issue) => {
         const fieldName = issue.path[0] as keyof ContactFormData;
         if (!fieldErrors[fieldName]) {
           fieldErrors[fieldName] = issue.message;
