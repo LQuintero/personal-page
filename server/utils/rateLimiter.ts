@@ -10,8 +10,8 @@ let hasWarnedAboutMissingConfig = false;
 
 function getRateLimiter(): Ratelimit | null {
   // Check if rate limiting is enabled (Upstash credentials are set)
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (!url || !token) {
     if (process.env.NODE_ENV === 'production') {

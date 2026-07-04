@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Oswald } from "next/font/google";
-import ConditionalFooter from '@/components/ConditionalFooter';
 import siteConfig from '@/site.config';
 import '@/styles/globals.css';
 
@@ -20,10 +19,9 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className={`${oswald.className} min-h-screen flex flex-col`}>
         <div className="flex flex-col min-h-screen relative">
-          <div className="flex-grow relative">
+          <div className="flex-grow relative flex flex-col">
             {children}
           </div>
-          <ConditionalFooter />
         </div>
       </body>
     </html>
