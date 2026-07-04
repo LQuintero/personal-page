@@ -15,7 +15,7 @@ A minimal personal portfolio built with Next.js 14, React, and TypeScript. Featu
 
 - Custom hook (`useContactForm`) encapsulates all form state, debounced validation, and submission logic
 - Shared Zod schema validates the same rules on both client (before fetch) and server (API route)
-- `ConditionalFooter` uses `usePathname` to hide the footer on the contact page without duplicating layouts
+- A `(main)` route group scopes the `Footer` to the home page via its own layout, so `/contact` never renders it — no client-side pathname check needed
 - `ParticleScripts` sequences dependent script loading via `next/script` and state
 
 ## Project structure
@@ -67,8 +67,8 @@ cp .env.example .env.local
 | `RESEND_API_KEY` | Yes | Resend API key |
 | `RESEND_FROM_EMAIL` | Yes | Sender address (must be a Resend-verified domain), e.g. `Your Name <you@yourdomain.com>` |
 | `RESEND_TO_EMAIL` | Yes | Where contact form submissions go |
-| `KV_REST_API_URL` | Production | Upstash Redis URL for rate limiting |
-| `KV_REST_API_TOKEN` | Production | Upstash Redis token |
+| `UPSTASH_REDIS_REST_URL` | Production | Upstash Redis URL for rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | Production | Upstash Redis token |
 
 Rate limiting is silently disabled in development if the Upstash variables are not set.
 
@@ -81,6 +81,15 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+## Testing
+
+Unit tests cover the Zod validation schema and the contact API route's rate-limit/validation/success branches:
+
+```bash
+npm test         # run once
+npm run test:watch
+```
 
 ## Deploy
 
