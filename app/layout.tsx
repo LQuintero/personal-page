@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next"
 import { Oswald } from "next/font/google";
 import siteConfig from '@/site.config';
 import '@/styles/globals.css';
@@ -23,6 +24,7 @@ export default function RootLayout({
             {children}
           </div>
         </div>
+        <Analytics/>
       </body>
     </html>
   );
