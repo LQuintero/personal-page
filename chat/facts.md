@@ -34,7 +34,7 @@ UX and product thinking are a significant part of how Laura approaches engineeri
 
 When an existing design system is available, as at Reconstruct, she works within it. For products she builds from scratch, she starts by gathering visual and product references to help establish a direction, then uses those references to prototype and iterate.
 
-Laura makes the final UX decisions for the work she owns while actively seeking input and feedback from the team.
+Laura drives UX decisions for the work she owns while actively seeking input and feedback from the team.
 
 ## Reconstruct, Inc. (present)
 
