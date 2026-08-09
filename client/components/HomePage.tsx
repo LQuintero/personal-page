@@ -5,7 +5,7 @@ import styles from '@/client/styles/HomePage.module.css';
 
 export default function Home({ title, subtitle, list }: HomePageProps) {
   return (
-    <main className={`${styles.main} px-6`}>
+    <main className={`${styles.main} pl-[max(1.5rem,env(safe-area-inset-left,0px))] pr-[max(1.5rem,env(safe-area-inset-right,0px))]`}>
       <div className={styles.content}>
         <div className={styles.identity}>
           <h1 className="text-[clamp(1.75rem,7.5vw,3.75rem)] sm:text-6xl font-bold text-center tracking-normal sm:tracking-wide max-w-full text-balance">

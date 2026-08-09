@@ -25,7 +25,7 @@ const styles = {
   // long typed text (or even the placeholder on narrow phones) forces the
   // composer row wider than the viewport and the page scrolls sideways.
   input:
-    'flex-1 min-w-0 bg-transparent border-none outline-none text-sm ' +
+    'flex-1 min-w-0 bg-transparent border-none outline-none text-base sm:text-sm ' +
     'text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400',
   sendButton:
     'w-8 h-8 flex-shrink-0 rounded-full bg-[#41b390] text-white flex items-center justify-center ' +
@@ -48,8 +48,9 @@ const styles = {
     'hover:bg-black/5 dark:hover:bg-white/10 hover:text-gray-800 dark:hover:text-gray-100 transition-colors',
   thread: 'flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden space-y-2 px-4 py-3',
   panelFooter:
-    'flex shrink-0 items-center justify-between gap-3 min-w-0 px-4 py-2.5 border-t border-black/10 dark:border-white/10 ' +
-    'text-xs text-gray-500 dark:text-gray-400',
+    'flex shrink-0 flex-col items-center gap-2 min-w-0 px-4 py-2.5 border-t border-black/10 dark:border-white/10 ' +
+    'text-xs text-gray-500 dark:text-gray-400 text-center ' +
+    'sm:flex-row sm:items-center sm:justify-between sm:text-left',
   clearButton:
     'underline hover:text-gray-700 dark:hover:text-gray-200 disabled:no-underline disabled:opacity-40 ' +
     'disabled:cursor-not-allowed',
@@ -145,12 +146,14 @@ const ChatBar: React.FC = () => {
   } = useChatBar();
 
   const titleId = useId();
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const threadRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isOpen) return;
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const thread = threadRef.current;
+    if (!thread) return;
+    thread.scrollTo({ top: thread.scrollHeight, behavior: 'smooth' });
   }, [messages, isLoading, isOpen]);
 
   useEffect(() => {
@@ -183,7 +186,7 @@ const ChatBar: React.FC = () => {
   const showCollapsedHint = hasStarted && !isOpen;
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-chat-active={showPanel ? '' : undefined}>
       <form onSubmit={handleSubmit} className={styles.row}>
         <input
           ref={inputRef}
@@ -239,6 +242,7 @@ const ChatBar: React.FC = () => {
           </div>
 
           <div
+            ref={threadRef}
             className={styles.thread}
             role="log"
             aria-live="polite"
@@ -248,7 +252,6 @@ const ChatBar: React.FC = () => {
               <MessageBubble key={message.id} message={message} />
             ))}
             {isLoading && <TypingIndicator />}
-            <div ref={bottomRef} />
           </div>
 
           {atCap && (

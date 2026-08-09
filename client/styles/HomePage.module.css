@@ -10,8 +10,25 @@
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  padding-top: clamp(1.5rem, 6vh, 3.5rem);
+  padding-top: clamp(1.25rem, 4vh, 3.5rem);
   padding-bottom: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .chatSlot {
+    margin-top: 1.5rem;
+  }
+
+  /* Keep the open chat panel centered on small screens — hide the hero so
+     Safari's input focus / keyboard resize doesn't leave a half-visible
+     header that looks shifted relative to the chat column. */
+  .content:has([data-chat-active]) .identity {
+    display: none;
+  }
+
+  .content:has([data-chat-active]) .chatSlot {
+    margin-top: 0;
+  }
 }
 
 .content {
@@ -41,7 +58,7 @@
   min-width: 0;
   width: 100%;
   max-width: 32rem; /* max-w-lg */
-  margin-top: clamp(3rem, 10vh, 5rem);
+  margin-top: clamp(2rem, 8vh, 5rem);
   display: flex;
   flex-direction: column;
 }

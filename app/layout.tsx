@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next"
 import { Oswald } from "next/font/google";
 import siteConfig from '@/client/site.config';
@@ -11,6 +11,12 @@ const oswald = Oswald({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: siteConfig.metadata.title,
   description: siteConfig.metadata.description,
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
