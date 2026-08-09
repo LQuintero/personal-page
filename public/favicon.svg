@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>RealFaviconGenerator</dc:creator><dc:source>https://realfavicongenerator.net</dc:source></rdf:Description></rdf:RDF></metadata><defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&amp;display=swap');
+      .mono {
+        font-family: 'Oswald', sans-serif;
+        font-weight: 700;
+      }
+    </style>
+  </defs><rect width="240" height="240" rx="24" fill="#121212"></rect><text x="50%" y="53%" text-anchor="middle" dominant-baseline="middle" class="mono" font-size="100" fill="#FFFFFF">
+    L<tspan fill="#41b390">Q</tspan>
+  </text></svg>
