@@ -14,14 +14,14 @@ import type { DisplayMessage } from '@/hooks/useChatBar';
 // stays #41b390 in both modes, matching ContactForm's send button.
 const styles = {
   row:
-    'flex items-center gap-2 rounded-full pl-4 pr-1.5 py-1.5 ' +
+    'flex items-center gap-2 rounded-full pl-5 pr-2 py-2 ' +
     'bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 ' +
     'focus-within:border-[#41b390]/60 transition-colors',
   input:
     'flex-1 bg-transparent border-none outline-none text-sm ' +
     'text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400',
   sendButton:
-    'w-7 h-7 flex-shrink-0 rounded-full bg-[#41b390] text-white flex items-center justify-center ' +
+    'w-8 h-8 flex-shrink-0 rounded-full bg-[#41b390] text-white flex items-center justify-center ' +
     'hover:bg-[#369d7a] disabled:bg-[#41b390]/40 disabled:cursor-not-allowed transition-colors',
   thread: 'mt-3 space-y-2',
   bubbleAssistant:
@@ -30,8 +30,28 @@ const styles = {
   footer: 'mt-2 text-xs text-gray-500 dark:text-gray-400 text-center',
 };
 
+/**
+ * Strips stray markdown emphasis markers (**bold**, __bold__, *italic*,
+ * _italic_) down to their plain text. The system prompt instructs the
+ * model never to use markdown formatting other than the contact link, but
+ * models don't always follow "don't format" instructions reliably —
+ * especially on longer answers. Since the chat bubbles render plain text
+ * (no markdown renderer), an unstripped "**Reconstruct**" would otherwise
+ * show up as literal asterisks. This is a safety net, not the primary
+ * fix — see chat/system-prompt.md's "Formatting" section for the actual
+ * instruction this backs up.
+ */
+function stripStrayMarkdown(content: string): string {
+  return content
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/(?<![\w*])\*([^*\n]+)\*(?![\w*])/g, '$1')
+    .replace(/(?<![\w_])_([^_\n]+)_(?![\w_])/g, '$1');
+}
+
 /** Renders "[/contact](/contact)"-style markdown links as real Next.js <Link>s. */
-function renderMessageContent(content: string, isUser: boolean) {
+function renderMessageContent(rawContent: string, isUser: boolean) {
+  const content = stripStrayMarkdown(rawContent);
   const linkPattern = /\[([^\]]+)\]\((\/[^\s)]+)\)/g;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
@@ -102,7 +122,7 @@ const ChatBar: React.FC = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={hasStarted ? 'Ask a follow-up' : "Ask Laura's AI anything"}
+          placeholder={hasStarted ? 'Ask a follow-up...' : 'Ask me anything about my work...'}
           maxLength={600}
           disabled={isLoading}
           className={styles.input}

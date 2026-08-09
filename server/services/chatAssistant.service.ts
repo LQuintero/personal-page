@@ -4,7 +4,13 @@ import type { ChatMessage } from '@/shared/validators/chat.validator';
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
 const DEFAULT_MODEL = 'claude-haiku-4-5-20251001';
-const MAX_TOKENS = 500;
+// A backstop, not the primary control on answer length — that's the
+// "Length" section in chat/system-prompt.md. This just guarantees a
+// runaway answer can't get too long even if the model ignores that
+// instruction; 300 tokens is generous enough that a well-behaved answer
+// should rarely hit it (an abrupt mid-sentence cutoff is worse than a
+// slightly-too-long answer, so don't set this too tight).
+const MAX_TOKENS = 300;
 
 function getModel(): string {
   return process.env.CHAT_MODEL || DEFAULT_MODEL;
