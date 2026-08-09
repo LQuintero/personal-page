@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/build-chat-prompt.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/build-chat-prompt.mjs",
     "build": "next build",
+    "build-chat-prompt": "node scripts/build-chat-prompt.mjs",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",

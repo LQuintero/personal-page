@@ -1,6 +1,6 @@
 const siteConfig = {
   name: 'Laura Quintero',
-  tagline: 'Technologist',
+  tagline: 'Product Engineer',
   social: {
     linkedin: 'https://www.linkedin.com/in/quinterolaura/',
     github: 'https://github.com/LQuintero',
