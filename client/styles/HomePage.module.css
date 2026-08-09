@@ -29,6 +29,12 @@
   .content:has([data-chat-active]) .chatSlot {
     margin-top: 0;
   }
+
+  /* Fixed theme toggle is top-4 + h-10 (56px); keep the chat composer clear of it. */
+  .main:has([data-chat-active]) {
+    padding-top: 3.75rem;
+    padding-right: max(3.75rem, env(safe-area-inset-right, 0px));
+  }
 }
 
 .content {
