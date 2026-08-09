@@ -36,5 +36,4 @@
   margin-top: clamp(3rem, 10vh, 5rem);
   display: flex;
   flex-direction: column;
-  pointer-events: auto;
 }
