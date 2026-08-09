@@ -15,12 +15,14 @@
 }
 
 html {
-  overflow-x: hidden;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
+  height: 100%;
+  overflow: hidden;
   color: rgb(var(--foreground-rgb));
-  overflow-x: hidden;
   background: linear-gradient(
       to bottom,
       transparent,
@@ -36,6 +38,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
 }
 
 #container canvas.sketch {

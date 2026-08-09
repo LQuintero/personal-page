@@ -6,19 +6,21 @@ import styles from '@/client/styles/HomePage.module.css';
 export default function Home({ title, subtitle, list }: HomePageProps) {
   return (
     <main className={`${styles.main} px-6`}>
-      <div className="flex flex-col items-center">
-        <h1 className="text-5xl sm:text-6xl font-bold text-center tracking-wide">
-          {title}
-        </h1>
-        <p className="text-xl sm:text-2xl text-center tracking-wide mt-[1rem] sm:mt-[1.575rem]">
-          {subtitle}
-        </p>
+      <div className={styles.content}>
+        <div className={styles.hero}>
+          <h1 className="text-5xl sm:text-6xl font-bold text-center tracking-wide">
+            {title}
+          </h1>
+          <p className="text-xl sm:text-2xl text-center tracking-wide mt-[1rem] sm:mt-[1.575rem]">
+            {subtitle}
+          </p>
 
-        <div id="links" className="inline-block mt-[0.95rem] sm:mt-[1.496rem]">
-          <List items={list} isHorizontal={true} />
+          <div id="links" className="inline-block mt-[0.95rem] sm:mt-[1.496rem]">
+            <List items={list} isHorizontal={true} />
+          </div>
         </div>
 
-        <div className="w-full max-w-lg min-w-0 mx-auto mt-8 sm:mt-10 pointer-events-auto">
+        <div className={styles.chatSlot}>
           <ChatBar />
         </div>
       </div>

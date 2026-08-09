@@ -13,9 +13,11 @@ import type { DisplayMessage } from '@/client/hooks/useChatBar';
 // matching the site's existing prefers-color-scheme-driven theme. The accent
 // stays #41b390 in both modes, matching ContactForm's send button.
 const styles = {
-  root: 'w-full min-w-0',
+  // Fills the home chat slot; when the panel is open it grows into remaining
+  // viewport height so only the transcript scrolls — never the page.
+  root: 'w-full min-w-0 h-full min-h-0 flex flex-col',
   row:
-    'flex items-center gap-2 min-w-0 w-full rounded-full pl-5 pr-2 py-2 ' +
+    'flex shrink-0 items-center gap-2 min-w-0 w-full rounded-full pl-5 pr-2 py-2 ' +
     'bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 ' +
     'focus-within:border-[#41b390]/60 transition-colors',
   // min-w-0 lets the flex child shrink below its content width — without it,
@@ -32,31 +34,27 @@ const styles = {
     'text-sm rounded-lg rounded-bl-sm px-3 py-2',
   bubbleUser:
     'max-w-[85%] min-w-0 break-words bg-[#41b390] text-white text-sm rounded-lg rounded-br-sm px-3 py-2 ml-auto',
-  footer: 'mt-2 text-xs text-gray-500 dark:text-gray-400 text-center',
-  // Inline panel under the composer — short enough that the name/tagline stay
-  // visible above on desktop; a bit taller on phones.
+  footer: 'mt-2 shrink-0 text-xs text-gray-500 dark:text-gray-400 text-center',
   panel:
-    'mt-3 flex flex-col min-w-0 overflow-hidden rounded-2xl ' +
+    'mt-3 flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl ' +
     'border border-black/10 dark:border-white/10 ' +
     'bg-white/80 dark:bg-[#121212]/90 backdrop-blur-sm',
   panelHeader:
-    'flex items-center justify-between gap-3 px-4 py-2.5 border-b border-black/10 dark:border-white/10',
+    'flex shrink-0 items-center justify-between gap-3 px-4 py-2.5 border-b border-black/10 dark:border-white/10',
   panelTitle: 'text-sm font-medium text-gray-900 dark:text-gray-100',
   collapseButton:
     'w-8 h-8 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 ' +
     'hover:bg-black/5 dark:hover:bg-white/10 hover:text-gray-800 dark:hover:text-gray-100 transition-colors',
-  thread:
-    'min-w-0 overflow-y-auto overflow-x-hidden space-y-2 px-4 py-3 ' +
-    'max-h-[40vh] sm:max-h-[min(36vh,16rem)]',
+  thread: 'flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden space-y-2 px-4 py-3',
   panelFooter:
-    'flex items-center justify-between gap-3 min-w-0 px-4 py-2.5 border-t border-black/10 dark:border-white/10 ' +
+    'flex shrink-0 items-center justify-between gap-3 min-w-0 px-4 py-2.5 border-t border-black/10 dark:border-white/10 ' +
     'text-xs text-gray-500 dark:text-gray-400',
   clearButton:
     'underline hover:text-gray-700 dark:hover:text-gray-200 disabled:no-underline disabled:opacity-40 ' +
     'disabled:cursor-not-allowed',
-  capNote: 'px-4 pb-2 text-xs text-gray-500 dark:text-gray-400',
+  capNote: 'shrink-0 px-4 pb-2 text-xs text-gray-500 dark:text-gray-400',
   reopenHint:
-    'mt-2 text-xs text-gray-500 dark:text-gray-400 text-center underline ' +
+    'mt-2 shrink-0 text-xs text-gray-500 dark:text-gray-400 text-center underline ' +
     'hover:text-gray-700 dark:hover:text-gray-200',
 };
 

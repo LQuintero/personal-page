@@ -20,10 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
-      <body className={`${oswald.className} min-h-screen flex flex-col`}>
+      <body className={`${oswald.className} h-full flex flex-col`}>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <div className="flex flex-col flex-1 min-h-screen relative">
-          <div className="flex-1 relative flex flex-col">
+        <div className="flex flex-col flex-1 h-full min-h-0 relative">
+          <div className="flex-1 relative flex flex-col min-h-0">
             {children}
           </div>
         </div>
