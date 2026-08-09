@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next"
 import { Oswald } from "next/font/google";
 import siteConfig from '@/site.config';
+import ThemeToggle from '@/components/ThemeToggle';
+import { THEME_INIT_SCRIPT } from '@/lib/theme';
 import '@/styles/globals.css';
 
 const oswald = Oswald({ subsets: ["latin"] });
@@ -17,13 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <body className={`${oswald.className} min-h-screen flex flex-col`}>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <div className="flex flex-col flex-1 min-h-screen relative">
           <div className="flex-1 relative flex flex-col">
             {children}
           </div>
         </div>
+        <ThemeToggle />
         <Analytics/>
       </body>
     </html>

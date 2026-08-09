@@ -48,14 +48,27 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on lau
 * Users can manually create detections directly from the 3D viewer.
 * Laura continues to iterate on the experience based on feedback and product analytics.
 
+### Authorization system at Reconstruct
+
+* Designed and led a project-scoped authorization system spanning the auth 
+  service, a shared client library, and downstream backend-for-frontend 
+  services.
+* Built JWT issuance and validation, a Redis-backed authorization cache, 
+  and key-rotation with public-key sync.
+* Owns the authorization contract end-to-end — from token issuance to 
+  caching to enforcement in BFF services that gate project data access.
+* Delivered feature work across BFF services (compliance features, 
+  inspection/measurement APIs, observability improvements).
+* Led infrastructure modernization: Node 22 migration, Mocha→Jest test 
+  migration, CI/CD pipeline setup.
+  
 ### Platform and architecture work
 
 * Led the platform's migration from AWS-only infrastructure to a hybrid AWS/OCI architecture to meet a large infrastructure client's data-residency and privacy requirements.
-* The AWS/OCI migration unlocked an estimated $4M sales pipeline.
+* The AWS/OCI migration unlocked a major enterprise sales opportunity.
 * Refactored and optimized the production Three.js/WebGL 3D and 2D viewers for better rendering performance and stability.
 * Eliminated race conditions in the 3D and 2D viewers.
 * Built and maintains a Node.js authentication service supporting enterprise SAML SSO and RBAC for multi-tenant access.
-* Built real-time JWT signing-key rotation using Redis pub/sub with an AWS Secrets Manager fallback.
 * Manages Docker-based deployments and Terraform infrastructure across AWS and OCI.
 * Built frontend boilerplates, a shared component library, and GitLab CI/CD pipelines for newer tools.
 * Uses Claude Code and Cursor for feature development with human review checkpoints before merge.
