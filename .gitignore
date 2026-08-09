@@ -35,4 +35,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# generated chat prompt bundle (rebuilt by predev/prebuild/pretypecheck hooks)
+/server/generated/
+
 .env

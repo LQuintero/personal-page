@@ -1,5 +1,5 @@
 import LinkButton from './LinkButton';
-import { ListItemProps } from '@/types/ListItemProps';
+import { ListItemProps } from '@/client/types/ListItemProps';
 
 const DEFAULT_TOOLTIP_POSITION = 'top';
 const tooltipPositionClasses: Record<string, string> = {

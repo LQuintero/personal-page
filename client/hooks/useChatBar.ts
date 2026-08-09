@@ -18,7 +18,6 @@ export interface UseChatBarReturn {
   input: string;
   setInput: (value: string) => void;
   isLoading: boolean;
-  error: string | null;
   sendMessage: () => Promise<void>;
 }
 
@@ -36,7 +35,6 @@ export const useChatBar = (): UseChatBarReturn => {
   const [messages, setMessages] = useState<DisplayMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   // History sent to the API — same shape as the display list here since
@@ -53,7 +51,6 @@ export const useChatBar = (): UseChatBarReturn => {
     setMessages([]);
     historyRef.current = [];
     setInput('');
-    setError(null);
     setIsLoading(false);
     setIsOpen(true);
   }, []);
@@ -69,8 +66,11 @@ export const useChatBar = (): UseChatBarReturn => {
     setMessages((prev) => [...prev, { id: nextId(), role: 'user', content: text }]);
     historyRef.current = [...historyRef.current, { role: 'user', content: text }];
     setInput('');
-    setError(null);
     setIsLoading(true);
+
+    // Use [here](/contact) so ChatBar can render a real Link (bare "/contact" stays plain text).
+    const fallback =
+      'Something went wrong on my end. Try again, or reach me directly [here](/contact).';
 
     try {
       const response = await fetch('/api/chat', {
@@ -79,24 +79,23 @@ export const useChatBar = (): UseChatBarReturn => {
         body: JSON.stringify({ messages: historyRef.current }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => null);
 
       if (session !== sessionRef.current) return;
 
-      if (!response.ok || !data.ok) {
-        throw new Error(data.error || 'Failed to get a reply');
+      if (response.ok && data?.ok) {
+        const reply: string = data.reply;
+        setMessages((prev) => [...prev, { id: nextId(), role: 'assistant', content: reply }]);
+        historyRef.current = [...historyRef.current, { role: 'assistant', content: reply }];
+      } else {
+        const content =
+          response.status === 429
+            ? "You're sending messages quickly — give it a few minutes and try again."
+            : fallback;
+        setMessages((prev) => [...prev, { id: nextId(), role: 'assistant', content }]);
       }
-
-      const reply: string = data.reply;
-      setMessages((prev) => [...prev, { id: nextId(), role: 'assistant', content: reply }]);
-      historyRef.current = [...historyRef.current, { role: 'assistant', content: reply }];
-    } catch (err) {
+    } catch {
       if (session !== sessionRef.current) return;
-      // Use [here](/contact) so ChatBar can render a real Link (bare "/contact" stays plain text).
-      const fallback =
-        'Something went wrong on my end. Try again, or reach me directly [here](/contact).';
-      const message = err instanceof Error && err.message ? err.message : fallback;
-      setError(message);
       setMessages((prev) => [
         ...prev,
         { id: nextId(), role: 'assistant', content: fallback },
@@ -118,7 +117,6 @@ export const useChatBar = (): UseChatBarReturn => {
     input,
     setInput,
     isLoading,
-    error,
     sendMessage,
   };
 };

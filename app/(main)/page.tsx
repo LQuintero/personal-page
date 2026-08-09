@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faSquareGithub, faSquareXTwitter } from '@fortawesome/free-brands-svg-icons';
 
-import Home from '@/components/HomePage';
-import ParticleScripts from '@/components/ParticleScripts';
-import siteConfig from '@/site.config';
-import { ListItemProps } from '@/types/ListItemProps';
-import { ITEM_ICON_CLASSES_SHORT, TOOLTIP_POSITION } from '@/constants/iconClasses';
+import Home from '@/client/components/HomePage';
+import ParticleScripts from '@/client/components/ParticleScripts';
+import siteConfig from '@/client/site.config';
+import { ListItemProps } from '@/client/types/ListItemProps';
+import { ITEM_ICON_CLASSES_SHORT, TOOLTIP_POSITION } from '@/client/constants/iconClasses';
 
 const listItems: ListItemProps[] = [
   {

@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
 // User messages are capped at 600 (also enforced in the client input).
-// Assistant replies can be longer — Haiku with max_tokens=500 routinely
-// returns 700–1500 chars, and those get echoed back in conversation history.
+// Assistant replies can be longer — with the max_tokens cap in
+// chatAssistant.service.ts (300), a reply can still run to ~1200 chars,
+// and replies get echoed back in conversation history.
 const MAX_USER_CHARS = 600;
 const MAX_ASSISTANT_CHARS = 2500;
 

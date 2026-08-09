@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getChatReply } from '@/server/services/chatAssistant.service';
+import { isNoAnswerResponse, logChatMessage } from '@/server/services/chatLog.service';
 import { handleError } from '@/server/utils/errorHandler';
-import { checkChatRateLimit } from '@/server/utils/rateLimiter';
+import { checkChatRateLimit, rateLimitHeaders } from '@/server/utils/rateLimiter';
 import { validateChatRequest } from '@/shared/validators/chat.validator';
 
 export async function POST(request: NextRequest) {
   try {
-    // Check rate limit before processing the request
     const rateLimitResult = await checkChatRateLimit(request);
 
     if (!rateLimitResult.success) {
@@ -20,9 +20,7 @@ export async function POST(request: NextRequest) {
         {
           status: 429,
           headers: {
-            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
-            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-            'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+            ...rateLimitHeaders(rateLimitResult),
             'Retry-After': retryAfter.toString(),
           },
         }
@@ -31,7 +29,6 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // Validate the request body using the shared Zod schema
     const validation = validateChatRequest(body);
 
     if (!validation.success) {
@@ -46,15 +43,19 @@ export async function POST(request: NextRequest) {
 
     const { reply } = await getChatReply(messages);
 
+    // Log the question and whether it got a real answer — the canned
+    // "I'm not sure" responses reveal gaps worth adding to chat/facts.md.
+    // logChatMessage swallows its own errors, so awaiting is safe.
+    const lastUserMessage = [...messages].reverse().find((m) => m.role === 'user');
+    await logChatMessage({
+      ts: new Date().toISOString(),
+      question: lastUserMessage?.content ?? '',
+      answered: !isNoAnswerResponse(reply),
+    });
+
     return NextResponse.json(
       { ok: true, reply },
-      {
-        headers: {
-          'X-RateLimit-Limit': rateLimitResult.limit.toString(),
-          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-          'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
-        },
-      }
+      { headers: rateLimitHeaders(rateLimitResult) }
     );
   } catch (err) {
     const { message: errorMessage } = handleError(err, 'Chat API');

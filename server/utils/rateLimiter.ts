@@ -1,75 +1,57 @@
 import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
+import { getRedisClientOrNull } from '@/server/utils/redis';
 
-/**
- * Rate limiter configuration for contact form API
- * Limits: 5 requests per 10 minutes per IP address
- */
-let rateLimiter: Ratelimit | null = null;
+type Duration = Parameters<typeof Ratelimit.slidingWindow>[1];
 
-/**
- * Rate limiter configuration for the chat widget API. Chat is a
- * conversation, not a single submission, so this is intentionally more
- * generous than the contact form: 20 messages per 5 minutes per IP. Uses a
- * distinct Upstash prefix so it never shares a bucket with contact-form
- * rate limiting.
- */
-let chatRateLimiter: Ratelimit | null = null;
-
-let hasWarnedAboutMissingConfig = false;
-
-function getRedisClientOrNull(): Redis | null {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-  if (!url || !token) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(
-        'UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN environment variables are required in production'
-      );
-    }
-    if (!hasWarnedAboutMissingConfig) {
-      console.warn(
-        '⚠️  Rate limiting disabled: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN not set'
-      );
-      hasWarnedAboutMissingConfig = true;
-    }
-    return null;
-  }
-
-  return new Redis({ url, token });
+interface LimiterConfig {
+  /** Upstash key prefix, so each feature gets its own bucket. */
+  prefix: string;
+  limit: number;
+  window: Duration;
+  windowMs: number;
 }
 
-function getRateLimiter(): Ratelimit | null {
-  if (!rateLimiter) {
-    const redis = getRedisClientOrNull();
-    if (!redis) return null;
+/**
+ * Contact form: 5 requests per 10 minutes per IP — a contact form is a
+ * single submission, so this is deliberately tight.
+ */
+const CONTACT_LIMITER: LimiterConfig = {
+  prefix: 'ratelimit:contact',
+  limit: 5,
+  window: '10 m',
+  windowMs: 10 * 60 * 1000,
+};
 
-    rateLimiter = new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(5, '10 m'), // 5 requests per 10 minutes
-      analytics: true,
-      prefix: 'ratelimit:contact',
-    });
-  }
+/**
+ * Chat widget: 20 messages per 5 minutes per IP. Chat is a conversation,
+ * not a single submission, so this is intentionally more generous than the
+ * contact form. A distinct prefix means it never shares a bucket with
+ * contact-form rate limiting.
+ */
+const CHAT_LIMITER: LimiterConfig = {
+  prefix: 'ratelimit:chat',
+  limit: 20,
+  window: '5 m',
+  windowMs: 5 * 60 * 1000,
+};
 
-  return rateLimiter;
-}
+const limiterCache = new Map<string, Ratelimit>();
 
-function getChatRateLimiter(): Ratelimit | null {
-  if (!chatRateLimiter) {
-    const redis = getRedisClientOrNull();
-    if (!redis) return null;
+function getLimiterOrNull(config: LimiterConfig): Ratelimit | null {
+  const cached = limiterCache.get(config.prefix);
+  if (cached) return cached;
 
-    chatRateLimiter = new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(20, '5 m'), // 20 messages per 5 minutes
-      analytics: true,
-      prefix: 'ratelimit:chat',
-    });
-  }
+  const redis = getRedisClientOrNull();
+  if (!redis) return null;
 
-  return chatRateLimiter;
+  const limiter = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(config.limit, config.window),
+    analytics: true,
+    prefix: config.prefix,
+  });
+  limiterCache.set(config.prefix, limiter);
+  return limiter;
 }
 
 /**
@@ -100,26 +82,20 @@ export interface RateLimitResult {
   reset: number;
 }
 
-/**
- * Checks if the request should be rate limited (contact form: 5 / 10 min)
- * @param request - The incoming request
- * @returns Object with success status and rate limit info
- */
-export async function checkRateLimit(request: Request): Promise<RateLimitResult> {
-  const limiter = getRateLimiter();
+async function checkLimit(request: Request, config: LimiterConfig): Promise<RateLimitResult> {
+  const limiter = getLimiterOrNull(config);
 
   // If rate limiting is not configured (development), allow all requests
   if (!limiter) {
     return {
       success: true,
-      limit: 5,
-      remaining: 5,
-      reset: Date.now() + 10 * 60 * 1000, // 10 minutes from now
+      limit: config.limit,
+      remaining: config.limit,
+      reset: Date.now() + config.windowMs,
     };
   }
 
-  const identifier = getClientIP(request);
-  const result = await limiter.limit(identifier);
+  const result = await limiter.limit(getClientIP(request));
 
   return {
     success: result.success,
@@ -129,30 +105,21 @@ export async function checkRateLimit(request: Request): Promise<RateLimitResult>
   };
 }
 
-/**
- * Checks if the request should be rate limited (chat widget: 20 / 5 min)
- * @param request - The incoming request
- * @returns Object with success status and rate limit info
- */
+/** Checks if the request should be rate limited (contact form: 5 / 10 min). */
+export async function checkRateLimit(request: Request): Promise<RateLimitResult> {
+  return checkLimit(request, CONTACT_LIMITER);
+}
+
+/** Checks if the request should be rate limited (chat widget: 20 / 5 min). */
 export async function checkChatRateLimit(request: Request): Promise<RateLimitResult> {
-  const limiter = getChatRateLimiter();
+  return checkLimit(request, CHAT_LIMITER);
+}
 
-  if (!limiter) {
-    return {
-      success: true,
-      limit: 20,
-      remaining: 20,
-      reset: Date.now() + 5 * 60 * 1000,
-    };
-  }
-
-  const identifier = getClientIP(request);
-  const result = await limiter.limit(identifier);
-
+/** Standard X-RateLimit-* response headers for a checked request. */
+export function rateLimitHeaders(result: RateLimitResult): Record<string, string> {
   return {
-    success: result.success,
-    limit: result.limit,
-    remaining: result.remaining,
-    reset: result.reset,
+    'X-RateLimit-Limit': result.limit.toString(),
+    'X-RateLimit-Remaining': result.remaining.toString(),
+    'X-RateLimit-Reset': new Date(result.reset).toISOString(),
   };
 }

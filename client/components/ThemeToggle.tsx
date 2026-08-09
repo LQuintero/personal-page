@@ -10,7 +10,7 @@ import {
   resolveTheme,
   toggleTheme,
   type Theme,
-} from '@/lib/theme';
+} from '@/client/lib/theme';
 
 /** Minimal line-art sun: hollow circle + 8 short detached rays. */
 function SunIcon({ className }: { className?: string }) {

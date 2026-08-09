@@ -9,7 +9,8 @@
 //
 // Edit the prompt or the facts in chat/, never in
 // server/generated/chatPrompt.generated.ts directly — it's overwritten
-// every run.
+// every run. The output is gitignored; only the chat/*.md sources are
+// committed.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';

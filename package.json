@@ -13,6 +13,8 @@
     "build-chat-prompt": "node scripts/build-chat-prompt.mjs",
     "start": "next start",
     "lint": "next lint",
+    "pretypecheck": "node scripts/build-chat-prompt.mjs",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -32,11 +34,13 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^24",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "jsdom": "^29.1.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",

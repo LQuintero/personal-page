@@ -1,4 +1,4 @@
-import { LinkButtonProps } from '@/types/LinkButtonProps';
+import { LinkButtonProps } from '@/client/types/LinkButtonProps';
 
 export default function LinkButton({ id, uri, label, icon, openInNewTab }: LinkButtonProps) {
   const target = openInNewTab ? '_blank' : '_self';

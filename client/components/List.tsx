@@ -1,5 +1,5 @@
 import ListItem from './ListItem';
-import { ListItemProps } from '@/types/ListItemProps';
+import { ListItemProps } from '@/client/types/ListItemProps';
 
 interface ListProps {
   items: ListItemProps[];

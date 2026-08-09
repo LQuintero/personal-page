@@ -1,4 +1,10 @@
 
+/*
+ * Particle background, adapted from Justin Windle's "Particles" demo
+ * (https://codepen.io/soulwire/pen/foktm), built on his sketch.js
+ * (https://github.com/soulwire/sketch.js, MIT) — vendored here as
+ * sketch.min.js.
+ */
 function Particle( x, y, radius ) {
 	this.init( x, y, radius );
 }

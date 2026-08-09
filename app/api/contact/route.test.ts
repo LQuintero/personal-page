@@ -4,7 +4,10 @@ import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vites
 const { checkRateLimit } = vi.hoisted(() => ({ checkRateLimit: vi.fn() }));
 const { sendEmail } = vi.hoisted(() => ({ sendEmail: vi.fn() }));
 
-vi.mock('@/server/utils/rateLimiter', () => ({ checkRateLimit }));
+vi.mock('@/server/utils/rateLimiter', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/server/utils/rateLimiter')>();
+  return { ...actual, checkRateLimit };
+});
 vi.mock('@/server/services/email.service', () => ({ sendEmail }));
 
 const { POST } = await import('./route');

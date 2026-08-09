@@ -3,9 +3,18 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const { checkChatRateLimit } = vi.hoisted(() => ({ checkChatRateLimit: vi.fn() }));
 const { getChatReply } = vi.hoisted(() => ({ getChatReply: vi.fn() }));
+const { logChatMessage } = vi.hoisted(() => ({ logChatMessage: vi.fn() }));
 
-vi.mock('@/server/utils/rateLimiter', () => ({ checkChatRateLimit }));
+vi.mock('@/server/utils/rateLimiter', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/server/utils/rateLimiter')>();
+  return { ...actual, checkChatRateLimit };
+});
 vi.mock('@/server/services/chatAssistant.service', () => ({ getChatReply }));
+// Keep the real isNoAnswerResponse so tests exercise the answered heuristic.
+vi.mock('@/server/services/chatLog.service', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/server/services/chatLog.service')>();
+  return { ...actual, logChatMessage };
+});
 
 const { POST } = await import('./route');
 
@@ -84,6 +93,55 @@ describe('POST /api/chat', () => {
     expect(data.ok).toBe(true);
     expect(data.reply).toBe("I'm building Eco Pass on the side.");
     expect(getChatReply).toHaveBeenCalledWith([{ role: 'user', content: 'What are you working on?' }]);
+  });
+
+  it('logs the question as answered on a substantive reply', async () => {
+    checkChatRateLimit.mockResolvedValue(allowedRateLimit);
+    getChatReply.mockResolvedValue({ reply: "I'm building Eco Pass on the side." });
+
+    await POST(
+      makeRequest({ messages: [{ role: 'user', content: 'What are you working on?' }] })
+    );
+
+    expect(logChatMessage).toHaveBeenCalledTimes(1);
+    expect(logChatMessage).toHaveBeenCalledWith({
+      ts: expect.any(String),
+      question: 'What are you working on?',
+      answered: true,
+    });
+  });
+
+  it('logs the question as unanswered on a canned no-answer reply', async () => {
+    checkChatRateLimit.mockResolvedValue(allowedRateLimit);
+    getChatReply.mockResolvedValue({
+      reply: "I'm not sure about that one, but you can ask Laura [here](/contact).",
+    });
+
+    await POST(
+      makeRequest({ messages: [{ role: 'user', content: 'What is her favorite color?' }] })
+    );
+
+    expect(logChatMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        question: 'What is her favorite color?',
+        answered: false,
+      })
+    );
+  });
+
+  it('does not log rate-limited or invalid requests', async () => {
+    checkChatRateLimit.mockResolvedValue({
+      success: false,
+      limit: 20,
+      remaining: 0,
+      reset: Date.now() + 60_000,
+    });
+    await POST(makeRequest({ messages: [{ role: 'user', content: 'hi there' }] }));
+
+    checkChatRateLimit.mockResolvedValue(allowedRateLimit);
+    await POST(makeRequest({ messages: [] }));
+
+    expect(logChatMessage).not.toHaveBeenCalled();
   });
 
   it('returns a sanitized 500 error when the chat service throws', async () => {

@@ -1,6 +1,14 @@
 # Developer Portfolio
 
+[![CI](https://github.com/LQuintero/personal-page/actions/workflows/ci.yml/badge.svg)](https://github.com/LQuintero/personal-page/actions/workflows/ci.yml)
+
+**Live at [lauraq.co](https://lauraq.co)**
+
 A minimal personal portfolio built with Next.js 14, React, and TypeScript. Features a contact form backed by Resend, an AI chat assistant grounded in a curated facts pack, per-IP rate limiting via Upstash Redis, and shared Zod validation between client and server.
+
+<!-- TODO: add a screenshot or GIF of the homepage + chat widget here, e.g.:
+![Homepage with chat widget](docs/assets/homepage.png)
+-->
 
 ## Stack
 
@@ -34,7 +42,7 @@ client/       React components, hooks, types, and site config
 scripts/      Build-time codegen (bundles chat/*.md into a TS constant)
 server/       Server-only utilities (email service, chat service, rate limiter, error handler)
 shared/       Code shared between client and server (Zod validators)
-public/       Static assets (particle scripts)
+public/       Static assets (particle background: soulwire's sketch.js, MIT)
 docs/         Feature documentation (chat widget)
 ```
 
@@ -77,10 +85,10 @@ cp .env.example .env.local
 | `RESEND_TO_EMAIL` | Yes | Where contact form submissions go |
 | `ANTHROPIC_API_KEY` | Yes | Anthropic API key, powers the chat assistant |
 | `CHAT_MODEL` | No | Overrides the default chat model |
-| `UPSTASH_REDIS_REST_URL` | Production | Upstash Redis URL for rate limiting (shared by the contact form and chat) |
+| `UPSTASH_REDIS_REST_URL` | Production | Upstash Redis URL for rate limiting (shared by the contact form and chat) and the chat question log |
 | `UPSTASH_REDIS_REST_TOKEN` | Production | Upstash Redis token |
 
-Rate limiting is silently disabled in development if the Upstash variables are not set.
+Rate limiting and the chat question log are silently disabled in development if the Upstash variables are not set.
 
 ## Getting started
 
@@ -96,7 +104,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Testing
 
-Unit tests cover the Zod validation schemas and both API routes' rate-limit/validation/success branches — contact and chat:
+Unit tests cover the Zod validation schemas, both API routes' rate-limit/validation/success branches (contact and chat), the chat question log's answered heuristic, and the `useChatBar` hook — including the race guard that keeps an in-flight reply from repopulating a cleared thread:
 
 ```bash
 npm test         # run once
@@ -105,4 +113,8 @@ npm run test:watch
 
 ## Deploy
 
-Deploy to Vercel and set the environment variables in the project settings. The Upstash Redis variables are required in production — the app will throw on startup without them. `npm run build` regenerates the chat assistant's prompt bundle automatically (via npm's `prebuild` hook).
+Deploy to Vercel and set the environment variables in the project settings. The Upstash Redis variables are required in production — API routes will fail at the first request without them. `npm run build` regenerates the chat assistant's prompt bundle automatically (via npm's `prebuild` hook).
+
+## License
+
+[MIT](LICENSE)

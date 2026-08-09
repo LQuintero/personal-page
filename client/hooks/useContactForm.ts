@@ -119,34 +119,24 @@ export const useContactForm = (): UseContactFormReturn => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => null);
 
-      if (!response.ok || !data.ok) {
-        if (data.field) {
-          setErrors({ [data.field]: data.error });
-        } else {
-          throw new Error(data.error || 'Failed to send message');
-        }
+      if (response.ok && data?.ok) {
+        resetForm();
+        setSuccess(true);
         return;
       }
 
-      resetForm();
-      setSuccess(true);
-    } catch (err) {
-      let errorMessage = 'Failed to send message. Please try again.';
-
-      if (err instanceof Error) {
-        const message = err.message.toLowerCase();
-        if (message.includes('too many requests')) {
-          errorMessage = 'Too many requests. Please try again later.';
-        } else if (message.includes('invalid input') || message.includes('check your information')) {
-          errorMessage = 'Please check your information and try again.';
-        } else if (message.includes('network') || message.includes('connection')) {
-          errorMessage = 'Network error. Please check your connection and try again.';
-        }
+      if (response.status === 400 && data?.field) {
+        setErrors({ [data.field as keyof ContactFormData]: data.error });
+      } else if (response.status === 429) {
+        setErrors({ general: 'Too many requests. Please try again later.' });
+      } else {
+        setErrors({ general: 'Failed to send message. Please try again.' });
       }
-
-      setErrors({ general: errorMessage });
+    } catch {
+      // fetch itself failed — no response at all
+      setErrors({ general: 'Network error. Please check your connection and try again.' });
     } finally {
       setIsLoading(false);
     }

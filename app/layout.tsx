@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next"
 import { Oswald } from "next/font/google";
-import siteConfig from '@/site.config';
-import ThemeToggle from '@/components/ThemeToggle';
-import { THEME_INIT_SCRIPT } from '@/lib/theme';
-import '@/styles/globals.css';
+import siteConfig from '@/client/site.config';
+import ThemeToggle from '@/client/components/ThemeToggle';
+import { THEME_INIT_SCRIPT } from '@/client/lib/theme';
+import '@/client/styles/globals.css';
 
 const oswald = Oswald({ subsets: ["latin"] });
 

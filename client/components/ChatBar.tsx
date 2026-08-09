@@ -5,8 +5,8 @@ import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { MAX_CHAT_MESSAGES, useChatBar } from '@/hooks/useChatBar';
-import type { DisplayMessage } from '@/hooks/useChatBar';
+import { MAX_CHAT_MESSAGES, useChatBar } from '@/client/hooks/useChatBar';
+import type { DisplayMessage } from '@/client/hooks/useChatBar';
 
 // Style constants - update these in one place to change styles across the chat bar.
 // Neutral tones use black/white at low opacity so they read correctly in both

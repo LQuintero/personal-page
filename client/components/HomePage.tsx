@@ -1,7 +1,7 @@
-import { HomePageProps } from '@/types/HomePageProps';
+import { HomePageProps } from '@/client/types/HomePageProps';
 import List from './List';
 import ChatBar from './ChatBar';
-import styles from '@/styles/HomePage.module.css';
+import styles from '@/client/styles/HomePage.module.css';
 
 export default function Home({ title, subtitle, list }: HomePageProps) {
   return (

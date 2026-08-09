@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '@/server/services/email.service';
 import { handleError } from '@/server/utils/errorHandler';
-import { checkRateLimit } from '@/server/utils/rateLimiter';
+import { checkRateLimit, rateLimitHeaders } from '@/server/utils/rateLimiter';
 import { validateContactForm } from '@/shared/validators/contact.validator';
 
 export async function POST(request: NextRequest) {
@@ -20,9 +20,7 @@ export async function POST(request: NextRequest) {
         {
           status: 429,
           headers: {
-            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
-            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-            'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+            ...rateLimitHeaders(rateLimitResult),
             'Retry-After': retryAfter.toString(),
           },
         }
@@ -65,13 +63,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { ok: true },
-      {
-        headers: {
-          'X-RateLimit-Limit': rateLimitResult.limit.toString(),
-          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-          'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
-        },
-      }
+      { headers: rateLimitHeaders(rateLimitResult) }
     );
   } catch (err) {
     const { message: errorMessage } = handleError(err, 'Contact API');

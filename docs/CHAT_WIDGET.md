@@ -29,6 +29,9 @@ server/
   services/
     chatAssistant.service.ts  Calls the Anthropic API, mirrors the
                                structure of email.service.ts.
+    chatLog.service.ts        Logs each question (and whether it got a
+                               real answer) to Upstash Redis — see
+                               "Question log" below.
   utils/
     rateLimiter.ts             Extended with checkChatRateLimit alongside
                                 the existing contact-form limiter (20
@@ -79,8 +82,29 @@ limiting no-ops without them, same as the existing contact form), then
 1. Edit `chat/facts.md` and/or `chat/system-prompt.md`.
 2. `npm run build-chat-prompt` (or just `npm run dev` / `npm run build`,
    which do it for you).
-3. Commit the regenerated `server/generated/chatPrompt.generated.ts`
-   alongside your source edits.
+3. Commit the source edits. The generated
+   `server/generated/chatPrompt.generated.ts` is gitignored — every
+   environment (dev, CI, Vercel) regenerates it via the npm lifecycle
+   hooks, so it never needs to be committed.
+
+## Question log
+
+Every successful chat turn appends an entry to the Redis list `chat:log`
+(newest first, capped at 500 entries):
+
+```json
+{ "ts": "2026-08-09T18:49:00.000Z", "question": "What has she built?", "answered": true }
+```
+
+`answered` is a heuristic: it's `false` when the reply contains one of the
+canned no-answer responses ("I'm not sure about that one..." from the
+system prompt, or the empty-reply fallback). Unanswered questions are the
+signal — they show what visitors ask that `chat/facts.md` doesn't cover
+yet.
+
+Logging is best-effort: it no-ops in development when the Upstash env
+vars aren't set, and any Redis failure is swallowed so it can never break
+a chat reply. Rate-limited and invalid requests are not logged.
 
 ## Guardrails (why this is safe to run publicly, with a public repo)
 
