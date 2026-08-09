@@ -19,8 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={`${oswald.className} min-h-screen flex flex-col`}>
-        <div className="flex flex-col min-h-screen relative">
-          <div className="flex-grow relative flex flex-col">
+        <div className="flex flex-col flex-1 min-h-screen relative">
+          <div className="flex-1 relative flex flex-col">
             {children}
           </div>
         </div>

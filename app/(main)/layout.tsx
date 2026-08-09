@@ -6,9 +6,11 @@ export default function MainLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="flex flex-col flex-1 h-dvh overflow-hidden">
       {children}
-      <Footer />
-    </>
+      <div className="relative z-10 shrink-0">
+        <Footer />
+      </div>
+    </div>
   );
 }
