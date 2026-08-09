@@ -14,14 +14,14 @@ import type { DisplayMessage } from '@/hooks/useChatBar';
 // stays #41b390 in both modes, matching ContactForm's send button.
 const styles = {
   row:
-    'flex items-center gap-2 rounded-full pl-5 pr-2 py-2 ' +
+    'flex items-center gap-2 rounded-full pl-4 pr-1.5 py-1.5 ' +
     'bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 ' +
     'focus-within:border-[#41b390]/60 transition-colors',
   input:
     'flex-1 bg-transparent border-none outline-none text-sm ' +
     'text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400',
   sendButton:
-    'w-8 h-8 flex-shrink-0 rounded-full bg-[#41b390] text-white flex items-center justify-center ' +
+    'w-7 h-7 flex-shrink-0 rounded-full bg-[#41b390] text-white flex items-center justify-center ' +
     'hover:bg-[#369d7a] disabled:bg-[#41b390]/40 disabled:cursor-not-allowed transition-colors',
   thread: 'mt-3 space-y-2',
   bubbleAssistant:

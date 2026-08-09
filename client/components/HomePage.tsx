@@ -5,25 +5,22 @@ import styles from '@/styles/HomePage.module.css';
 
 export default function Home({ title, subtitle, list }: HomePageProps) {
   return (
-    <main
-      className={`${styles.main} px-6`}
-    >
-      <div>
-        <h1 className='text-7xl font-bold text-center tracking-wide mt-8'>
+    <main className={`${styles.main} px-6`}>
+      <div className="flex flex-col items-center">
+        <h1 className="text-5xl sm:text-6xl font-bold text-center tracking-wide">
           {title}
         </h1>
-        <p className='text-3xl text-center tracking-wide mt-8'>{subtitle}</p>
-      </div>
+        <p className="text-xl sm:text-2xl text-center tracking-wide mt-6 sm:mt-7">
+          {subtitle}
+        </p>
 
-      <div className='w-full max-w-md mx-auto mt-10'>
-        <ChatBar />
-      </div>
+        <div id="links" className="inline-block mt-8 sm:mt-9">
+          <List items={list} isHorizontal={true} />
+        </div>
 
-      <div id="links" className='inline-block mt-10'>
-        <List
-          items={list}
-          isHorizontal={true}
-        />
+        <div className="w-full max-w-md mx-auto mt-12 sm:mt-14">
+          <ChatBar />
+        </div>
       </div>
     </main>
   );

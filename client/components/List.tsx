@@ -10,7 +10,7 @@ export default function List({ items, isHorizontal }: ListProps) {
   const listDirection = isHorizontal ? 'flex-row' : 'flex-col';
 
   return (
-    <ul className={`list-none p-0 flex mt-4 ${listDirection}`}>
+    <ul className={`list-none p-0 flex ${listDirection}`}>
       {items.map((item) => (
         <ListItem
           key={item.item.id || item.item.uri}

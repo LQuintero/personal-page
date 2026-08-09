@@ -16,9 +16,7 @@ chat/
   facts.md               The only facts the AI can draw from. Edit this
                           whenever the story changes — new role, new
                           project, updated framing.
-  system-prompt.md       Voice, tone, and guardrails: a deny-list (no age,
-                          no graduation year, no speculation about current
-                          employment or Eco Pass internals), grounding
+  system-prompt.md       Voice, tone, and guardrails: a deny-list, grounding
                           rules, contact handoff, and injection resistance.
 scripts/
   build-chat-prompt.mjs  Bundles the two files above into

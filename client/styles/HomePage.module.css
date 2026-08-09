@@ -3,11 +3,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 20vh;
+  padding-top: 5.5rem;
+  padding-bottom: 3rem;
+}
+
+/* Once the conversation thread is present, free vertical space for messages. */
+.main:has([role='log']) {
+  padding-top: 2.5rem;
 }
 
 @media (max-width: 640px) {
   .main {
-    padding-top: 12vh;
+    padding-top: 3.25rem;
+    padding-bottom: 2rem;
+  }
+
+  .main:has([role='log']) {
+    padding-top: 1.75rem;
   }
 }

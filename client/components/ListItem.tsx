@@ -15,7 +15,7 @@ export default function ListItem({ item, tooltipText, tooltipPosition }: ListIte
   return (
     <li
       id={itemId}
-      className="flex items-center px-0.5 py-2"
+      className="flex items-center px-0.5 py-1"
     >
       <div className="group relative">
         <LinkButton
