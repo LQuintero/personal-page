@@ -3,9 +3,9 @@ import NavBar from '@/components/NavBar';
 
 export default function Contact() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-dvh overflow-hidden">
       <NavBar />
-      <div className="flex justify-center pt-16 pb-8">
+      <div className="flex flex-1 min-h-0 items-center justify-center overflow-y-auto px-4 py-4 sm:py-6">
         <ContactForm />
       </div>
     </div>

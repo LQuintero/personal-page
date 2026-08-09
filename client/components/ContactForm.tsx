@@ -5,9 +5,9 @@ import { useContactForm } from '@/hooks/useContactForm';
 
 // Style constants - update these in one place to change styles across the form
 const styles = {
-  container: 'max-w-3xl mx-auto px-12 w-full',
-  form: 'space-y-5 border border-gray-200 rounded-lg shadow-sm bg-white p-8',
-  title: 'text-xl font-semibold text-gray-900 mb-6',
+  container: 'max-w-xl mx-auto w-full',
+  form: 'space-y-4 border border-gray-200 rounded-lg shadow-sm bg-white p-6 sm:p-8',
+  title: 'text-xl font-semibold text-gray-900 mb-4',
   label: 'block text-sm font-medium text-gray-600 mb-1.5',
   input: 'block w-full text-sm border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-colors',
   textarea: 'block w-full text-sm border border-gray-300 rounded-md shadow-sm px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-colors resize-none',
@@ -97,7 +97,7 @@ const ContactForm: React.FC = () => {
             value={formData.message}
             onChange={handleChange}
             className={`${styles.textarea} ${errors.message ? 'border-red-300 focus:ring-red-400 focus:border-red-400' : ''}`}
-            rows={5}
+            rows={4}
             maxLength={MESSAGE_MAX_LENGTH}
             aria-describedby={errors.message ? 'message-error' : 'message-help'}
             aria-invalid={!!errors.message}
