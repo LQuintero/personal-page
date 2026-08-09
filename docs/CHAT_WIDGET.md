@@ -109,6 +109,17 @@ Logging is best-effort: it no-ops in development when the Upstash env
 vars aren't set, and any Redis failure is swallowed so it can never break
 a chat reply. Rate-limited and invalid requests are not logged.
 
+## Why responses aren't streamed
+
+Replies arrive as a single JSON response rather than streaming in
+token-by-token. This is deliberate: answers are capped at 300 tokens and
+served by Claude Haiku, so the full reply typically lands in about a
+second — fast enough that streaming would add complexity (SSE parsing,
+partial-message state, interaction with the clear-thread race guard)
+without a perceptible UX gain. If answers ever grow long enough for the
+wait to feel slow, streaming via the Anthropic API's `stream: true`
+option is the natural upgrade path.
+
 ## Guardrails (why this is safe to run publicly, with a public repo)
 
 - **Deny-list**: age, birth year, graduation year, and any arithmetic that

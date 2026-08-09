@@ -6,7 +6,7 @@
 
 A minimal personal portfolio built with Next.js 14, React, and TypeScript. Features a contact form backed by Resend, an AI chat assistant grounded in a curated facts pack, per-IP rate limiting via Upstash Redis, and shared Zod validation between client and server.
 
-
+![Homepage with AI chat assistant](docs/assets/homepage-chat-demo.png)
 
 ## Stack
 
