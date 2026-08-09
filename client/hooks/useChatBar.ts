@@ -92,8 +92,9 @@ export const useChatBar = (): UseChatBarReturn => {
       historyRef.current = [...historyRef.current, { role: 'assistant', content: reply }];
     } catch (err) {
       if (session !== sessionRef.current) return;
+      // Use [here](/contact) so ChatBar can render a real Link (bare "/contact" stays plain text).
       const fallback =
-        'Something went wrong on my end. Try again, or reach me directly at /contact.';
+        'Something went wrong on my end. Try again, or reach me directly [here](/contact).';
       const message = err instanceof Error && err.message ? err.message : fallback;
       setError(message);
       setMessages((prev) => [
