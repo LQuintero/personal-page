@@ -8,7 +8,7 @@ export default function Home({ title, subtitle, list }: HomePageProps) {
     <main className={`${styles.main} px-6`}>
       <div className={styles.content}>
         <div className={styles.identity}>
-          <h1 className="text-5xl sm:text-6xl font-bold text-center tracking-wide">
+          <h1 className="text-[clamp(1.75rem,7.5vw,3.75rem)] sm:text-6xl font-bold text-center tracking-normal sm:tracking-wide max-w-full text-balance">
             {title}
           </h1>
           <p className="text-xl sm:text-2xl text-center tracking-wide mt-1.5 sm:mt-2">

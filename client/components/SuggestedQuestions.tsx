@@ -8,10 +8,11 @@ const SUGGESTED_QUESTIONS = [
 
 const styles = {
   list:
-    'pointer-events-auto mt-2.5 mx-auto flex w-fit max-w-full list-none flex-wrap items-center justify-center gap-1.5 p-0',
+    'pointer-events-auto mt-2.5 mx-auto flex w-full min-w-0 max-w-full list-none flex-wrap items-center justify-center gap-1.5 p-0',
+  item: 'min-w-0 max-w-full',
   pill:
     'max-w-full rounded-full border border-black/15 dark:border-white/15 bg-transparent px-2 py-0.5 ' +
-    'font-mono text-[10px] leading-tight text-black/50 dark:text-white/50 ' +
+    'font-mono text-[10px] leading-tight text-center whitespace-normal break-words text-black/50 dark:text-white/50 ' +
     'transition-[color,border-color] duration-150 ' +
     'hover:border-black/30 hover:text-gray-900 dark:hover:border-white/35 dark:hover:text-white ' +
     'focus-visible:border-black/30 focus-visible:text-gray-900 dark:focus-visible:border-white/35 dark:focus-visible:text-white ' +
@@ -27,7 +28,7 @@ export default function SuggestedQuestions({ disabled, onSelect }: SuggestedQues
   return (
     <ul className={styles.list}>
       {SUGGESTED_QUESTIONS.map((question) => (
-        <li key={question}>
+        <li key={question} className={styles.item}>
           <button
             type="button"
             className={styles.pill}
