@@ -44,9 +44,27 @@ describe('validateChatRequest', () => {
     }
   });
 
-  it('rejects a message over 600 characters', () => {
+  it('rejects a user message over 600 characters', () => {
     const result = validateChatRequest({
       messages: [{ role: 'user', content: 'a'.repeat(601) }],
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts an assistant reply over 600 characters (history echo)', () => {
+    const result = validateChatRequest({
+      messages: [
+        { role: 'user', content: 'tell me about laura' },
+        { role: 'assistant', content: 'a'.repeat(900) },
+        { role: 'user', content: 'would she be a good product engineer' },
+      ],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects an assistant reply over 2500 characters', () => {
+    const result = validateChatRequest({
+      messages: [{ role: 'assistant', content: 'a'.repeat(2501) }],
     });
     expect(result.success).toBe(false);
   });
