@@ -18,7 +18,7 @@ export interface UseChatBarReturn {
   input: string;
   setInput: (value: string) => void;
   isLoading: boolean;
-  sendMessage: () => Promise<void>;
+  sendMessage: (overrideText?: string) => Promise<void>;
 }
 
 const MAX_INPUT_LENGTH = 600;
@@ -60,8 +60,8 @@ export const useChatBar = (): UseChatBarReturn => {
 
   const canSend = !isLoading && messages.length < MAX_CHAT_MESSAGES;
 
-  const sendMessage = useCallback(async () => {
-    const text = input.trim().slice(0, MAX_INPUT_LENGTH);
+  const sendMessage = useCallback(async (overrideText?: string) => {
+    const text = (overrideText ?? input).trim().slice(0, MAX_INPUT_LENGTH);
     if (!text || isLoading || historyRef.current.length >= MAX_CHAT_MESSAGES) return;
 
     const session = sessionRef.current;

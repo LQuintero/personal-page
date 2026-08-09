@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { MAX_CHAT_MESSAGES, useChatBar } from '@/client/hooks/useChatBar';
 import type { DisplayMessage } from '@/client/hooks/useChatBar';
+import SuggestedQuestions from './SuggestedQuestions';
 
 // Style constants - update these in one place to change styles across the chat bar.
 // Neutral tones use black/white at low opacity so they read correctly in both
@@ -210,6 +211,13 @@ const ChatBar: React.FC = () => {
           <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
         </button>
       </form>
+
+      {!hasStarted && (
+        <SuggestedQuestions
+          disabled={!canSend || isLoading}
+          onSelect={(question) => void sendMessage(question)}
+        />
+      )}
 
       {showPanel && (
         <div

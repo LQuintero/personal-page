@@ -5,7 +5,7 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 ## Identity
 
 - Laura Quintero.
-- Full-stack engineer based in Miami who works across product, UX, architecture, and implementation.
+- Product engineer based in Miami with full-stack depth, working across product, UX, architecture, and implementation.
 - Open to product engineer roles and available for freelance work.
 - Based in Miami with a preference for remote work.
 - Studied Electrical Engineering at Florida State University.
@@ -46,25 +46,62 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 - AI Automated Inspector is a Reconstruct product that uses computer vision and 360° imagery to detect, map, and catalog physical assets and deficiencies in facilities.
 - Laura works on the product experience around the ML detection pipeline in collaboration with an ML engineer.
 - Defined the workflow and UX for the detection review experience.
-- Designed how detected items are presented and how the detection list works.
+- Designed how detected items are presented, including a grouped detection list, a class selector, and per-class color coding for pins.
 - Designed how the detection list interacts with Reconstruct's 2D navigation and 3D viewer.
-- Users upload video that is processed by ML object detection for safety-relevant items including exit signs, fire extinguishers, air vents, and AED units.
+- Users upload video that is processed by ML object detection for items such as exit signs, wifi-access points, mobile workstations, thermostats and any other assets.
 - Detections appear as pins in both the 2D navigation and 3D viewer.
 - Detections connect spatial locations to their source imagery and corresponding detection-list items.
-- Users can add notes to detections.
+- Users can add free-form notes to detections.
 - Users can manually create detections directly from the 3D viewer.
+- Included accessibility work as part of the detection review experience.
 - Laura continues to iterate on the experience based on feedback and product analytics.
 
+
+
+### Inspection notes
+
+- Built an inspector notes feature end to end.
+- Scope spanned the interface, media attachments, server-side validation, the data layer, and route-level tests.
+
+
+
+### Measurements
+
+- Owns the measurements subsystem end to end.
+- Built angle and triangulation measurement tools.
+- Built a measurement API with project-wide saving.
+- Built the sidebar list UI for measurements, including sorting, filtering, and bulk select.
+- Added undo support and a refinement mode.
+- Added configurable units of measure.
+- Refactored the underlying tool architecture as the feature set grew.
+
+
+
+### Walkthrough and navigation
+
+- Built the sequence walkthrough experience for moving through a project's captured imagery.
+- Designed how the experience determines which directions are available to move at each capture point.
+- Built a world-space arrow overlay and D-pad for directional navigation.
+- Designed auto-play with eased transitions for smoother playback.
+
+
+
+### BCF issues
+
+- Contributed to Reconstruct's BCF (BIM Collaboration Format) issue-tracking feature.
+- Built custom fields and board extensions, including schema design, field ordering, and import support.
+- Built a filter panel supporting user-defined filters.
+- Added bulk edit support for issues.
 
 
 ### Authorization system at Reconstruct
 
 - Designed and led a project-scoped authorization system spanning the auth service, a shared client library, and downstream backend-for-frontend services.
 - Built and maintains a Node.js authentication service supporting enterprise SAML SSO and RBAC for multi-tenant access.
-- Built JWT issuance and validation, a Redis-backed authorization cache, and key-rotation with public-key sync.
-- Owns the authorization contract end-to-end — from token issuance to caching to enforcement in BFF services that gate project data access.
+- Built token issuance and validation, caching, and key-rotation for the authorization flow.
+- Owns the authorization contract end-to-end — from token issuance to caching to enforcement in downstream services.
 - Delivered feature work across BFF services (compliance features, inspection/measurement APIs, observability improvements).
-- Led infrastructure modernization: Node 22 migration, Mocha→Jest test migration, CI/CD pipeline setup.
+- Led infrastructure modernization: Node 22 migration, Mocha→Jest test migration, adoption of Vitest, and CI/CD pipeline setup.
 
 
 
@@ -75,16 +112,16 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 - Refactored and optimized the production Three.js/WebGL 3D and 2D viewers for better rendering performance and stability.
 - Eliminated race conditions in the 3D and 2D viewers.
 - Manages Docker-based deployments and Terraform infrastructure across AWS and OCI.
-- Built frontend boilerplates, a shared component library, and GitLab CI/CD pipelines for newer tools.
+- Built frontend boilerplates, a shared component library, and GitLab CI/CD pipelines for newer tools, including a Vite/Rollup build setup.
 - Uses Claude Code and Cursor for feature development with human review checkpoints before merge.
 
 
 
 ### Reconstruct stack
 
-TypeScript, Python, Vue.js, Three.js, Tailwind CSS, Express.js, Node.js, MongoDB, AWS, OCI, Docker, Terraform, GitLab CI/CD.
+TypeScript, Python, Vue.js, Three.js, Tailwind CSS, Express.js, Node.js, MongoDB, AWS, OCI, Docker, Terraform, GitLab CI/CD, Vite, Vitest.
 
-## Eco Pass — Founder & CTO (present, side project)
+## Eco Pass — Co-Founder & CTO (present, side project)
 
 - Eco Pass is a two-sided sustainability marketplace connecting consumers with mission-driven local businesses through a credit-based membership model.
 -  Eco Pass exists to make shopping sustainably and ethically easier without requiring consumers to do the research and due diligence themselves.
@@ -213,7 +250,7 @@ Node.js, NestJS, Express, Python, REST APIs, microservices.
 
 ### Cloud and DevOps
 
-AWS, OCI, Docker, Terraform, GitLab CI/CD.
+AWS, OCI, Docker, Terraform, GitLab CI/CD, Vite, Vitest.
 
 ### Data
 
@@ -249,4 +286,3 @@ C#, VB.NET, SQL Server, ASP.NET.
 
 - Visitors who want to reach Laura directly should use /contact.
 - The assistant should never claim it can send a message on Laura's behalf or invent contact information.
-
