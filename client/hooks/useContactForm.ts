@@ -8,6 +8,7 @@ export interface UseContactFormReturn {
   isLoading: boolean;
   errors: FormErrors;
   success: boolean;
+  showMessageMinHint: boolean;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   resetForm: () => void;
@@ -26,6 +27,7 @@ export const useContactForm = (): UseContactFormReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [success, setSuccess] = useState(false);
+  const [showMessageMinHint, setShowMessageMinHint] = useState(false);
   const validationTimers = useRef<Partial<Record<keyof ContactFormData, ReturnType<typeof setTimeout>>>>({});
 
   const validateField = (fieldName: keyof ContactFormData, value: string): string | undefined => {
@@ -60,6 +62,10 @@ export const useContactForm = (): UseContactFormReturn => {
 
     setFormData((prev: ContactFormData) => ({ ...prev, [name]: value }));
 
+    if (fieldName === 'message' && value.trim().length >= 10) {
+      setShowMessageMinHint(false);
+    }
+
     if (errors[fieldName]) {
       setErrors((prev: FormErrors) => ({ ...prev, [fieldName]: undefined }));
     }
@@ -80,6 +86,7 @@ export const useContactForm = (): UseContactFormReturn => {
     setFormData(initialFormData);
     setErrors({});
     setSuccess(false);
+    setShowMessageMinHint(false);
   };
 
   useEffect(() => {
@@ -108,6 +115,9 @@ export const useContactForm = (): UseContactFormReturn => {
         }
       });
       setErrors(fieldErrors);
+      if (formData.message.trim().length < 10) {
+        setShowMessageMinHint(true);
+      }
       setIsLoading(false);
       return;
     }
@@ -147,6 +157,7 @@ export const useContactForm = (): UseContactFormReturn => {
     isLoading,
     errors,
     success,
+    showMessageMinHint,
     handleChange,
     handleSubmit,
     resetForm,

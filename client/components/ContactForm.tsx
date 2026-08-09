@@ -35,10 +35,22 @@ const styles = {
 };
 
 const ContactForm: React.FC = () => {
-  const { formData, isLoading, errors, success, handleChange, handleSubmit } = useContactForm();
+  const { formData, isLoading, errors, success, showMessageMinHint, handleChange, handleSubmit } = useContactForm();
   
   const MESSAGE_MAX_LENGTH = 1000;
   const NAME_MAX_LENGTH = 100;
+  const NAME_NEAR_LIMIT_THRESHOLD = Math.floor(NAME_MAX_LENGTH * 0.8);
+
+  const showNameCharCount = formData.name.length >= NAME_NEAR_LIMIT_THRESHOLD;
+  const showMessageCharCount = formData.message.length > 0;
+  const showMessageHelp = showMessageMinHint || showMessageCharCount;
+
+  const messageDescribedBy = [
+    errors.message ? 'message-error' : null,
+    showMessageHelp ? 'message-help' : null,
+  ]
+    .filter(Boolean)
+    .join(' ') || undefined;
   
   return (
     <div className={styles.container}>
@@ -77,9 +89,11 @@ const ContactForm: React.FC = () => {
               {errors.name}
             </div>
           )}
-          <div className={styles.charCount}>
-            {formData.name.length}/{NAME_MAX_LENGTH} characters
-          </div>
+          {showNameCharCount && (
+            <div className={styles.charCount}>
+              {formData.name.length}/{NAME_MAX_LENGTH} characters
+            </div>
+          )}
         </div>
         
         <div>
@@ -115,7 +129,7 @@ const ContactForm: React.FC = () => {
             className={`${styles.textarea} ${errors.message ? 'border-red-300 focus:ring-red-400 focus:border-red-400' : ''}`}
             rows={4}
             maxLength={MESSAGE_MAX_LENGTH}
-            aria-describedby={errors.message ? 'message-error' : 'message-help'}
+            aria-describedby={messageDescribedBy}
             aria-invalid={!!errors.message}
             disabled={isLoading}
           ></textarea>
@@ -124,13 +138,25 @@ const ContactForm: React.FC = () => {
               {errors.message}
             </div>
           )}
-          <div id="message-help" className={`text-xs mt-1 flex justify-between ${
-            formData.message.length > MESSAGE_MAX_LENGTH * 0.9 ? 'text-orange-600 dark:text-orange-400' :
-            formData.message.length > MESSAGE_MAX_LENGTH * 0.8 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-400'
-          }`}>
-            <span>Minimum 10 characters required</span>
-            <span>{formData.message.length}/{MESSAGE_MAX_LENGTH} characters</span>
-          </div>
+          {showMessageHelp && (
+            <div
+              id="message-help"
+              className={`text-xs mt-1 flex justify-between ${
+                formData.message.length > MESSAGE_MAX_LENGTH * 0.9
+                  ? 'text-orange-600 dark:text-orange-400'
+                  : formData.message.length > MESSAGE_MAX_LENGTH * 0.8
+                    ? 'text-yellow-600 dark:text-yellow-400'
+                    : 'text-gray-500 dark:text-gray-400'
+              }`}
+            >
+              {showMessageMinHint && <span>Minimum 10 characters required</span>}
+              {showMessageCharCount && (
+                <span className={showMessageMinHint ? '' : 'ml-auto'}>
+                  {formData.message.length}/{MESSAGE_MAX_LENGTH} characters
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="pt-2">
