@@ -242,12 +242,12 @@ const ChatBar: React.FC = () => {
   const atCap = messages.length >= MAX_CHAT_MESSAGES;
   const heroPlaceholder = hasStarted
     ? 'Ask a follow-up...'
-    : 'Ask me anything about my work...';
+    : "Ask Laura's AI";
   const modalPlaceholder = atCap
     ? 'Clear to continue'
     : hasStarted
       ? 'Ask a follow-up...'
-      : 'Ask me anything about my work...';
+      : "Ask Laura's AI";
 
   const modal =
     mounted &&
