@@ -24,7 +24,7 @@ A minimal personal portfolio built with Next.js 14, React, and TypeScript. Featu
 
 - Custom hooks (`useContactForm`, `useChatBar`) each encapsulate all state, validation, and submission logic for their feature — same pattern applied consistently across the contact form and the chat assistant
 - Shared Zod schemas validate the same rules on both client (before fetch) and server (API route), for both the contact form and chat requests
-- A `(main)` route group scopes the `Footer` to the home page via its own layout, so `/contact` never renders it — no client-side pathname check needed
+- A `(main)` route group gives the home page a full-viewport layout (`h-dvh`, no page-level scroll); `/contact` lives outside it with its own shell
 - `ParticleScripts` sequences dependent script loading via `next/script` and state
 
 
