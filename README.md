@@ -6,19 +6,19 @@
 
 A minimal personal portfolio built with Next.js 14, React, and TypeScript. Features a contact form backed by Resend, an AI chat assistant grounded in a curated facts pack, per-IP rate limiting via Upstash Redis, and shared Zod validation between client and server.
 
-<!-- TODO: add a screenshot or GIF of the homepage + chat widget here, e.g.:
-![Homepage with chat widget](docs/assets/homepage.png)
--->
+
 
 ## Stack
 
 - **Framework**: Next.js 14 (App Router)
 - **Styling**: Tailwind CSS
-- **AI chat**: Claude API, grounded in a facts pack — see [`docs/CHAT_WIDGET.md`](docs/CHAT_WIDGET.md)
+- **AI chat**: Claude API, grounded in a facts pack — see [docs/CHAT_WIDGET.md](docs/CHAT_WIDGET.md)
 - **Email**: Resend
 - **Rate limiting**: Upstash Redis
 - **Validation**: Zod (shared between client and server)
 - **Font**: Oswald (Google Fonts)
+
+
 
 ## React patterns
 
@@ -26,6 +26,8 @@ A minimal personal portfolio built with Next.js 14, React, and TypeScript. Featu
 - Shared Zod schemas validate the same rules on both client (before fetch) and server (API route), for both the contact form and chat requests
 - A `(main)` route group scopes the `Footer` to the home page via its own layout, so `/contact` never renders it — no client-side pathname check needed
 - `ParticleScripts` sequences dependent script loading via `next/script` and state
+
+
 
 ## Project structure
 
@@ -46,7 +48,11 @@ public/       Static assets (particle background: soulwire's sketch.js, MIT)
 docs/         Feature documentation (chat widget)
 ```
 
+
+
 ## Configuration
+
+
 
 ### Personal data
 
@@ -68,7 +74,7 @@ const siteConfig = {
 };
 ```
 
-Edit `chat/facts.md` and `chat/system-prompt.md` to set what the chat assistant knows and how it behaves — see [`docs/CHAT_WIDGET.md`](docs/CHAT_WIDGET.md) for details.
+Edit `chat/facts.md` and `chat/system-prompt.md` to set what the chat assistant knows and how it behaves — see `[docs/CHAT_WIDGET.md](docs/CHAT_WIDGET.md)` for details.
 
 ### Environment variables
 
@@ -78,15 +84,17 @@ Copy `.env.example` to `.env.local` and fill in the values:
 cp .env.example .env.local
 ```
 
-| Variable | Required | Description |
-|---|---|---|
-| `RESEND_API_KEY` | Yes | Resend API key |
-| `RESEND_FROM_EMAIL` | Yes | Sender address (must be a Resend-verified domain), e.g. `Your Name <you@yourdomain.com>` |
-| `RESEND_TO_EMAIL` | Yes | Where contact form submissions go |
-| `ANTHROPIC_API_KEY` | Yes | Anthropic API key, powers the chat assistant |
-| `CHAT_MODEL` | No | Overrides the default chat model |
-| `UPSTASH_REDIS_REST_URL` | Production | Upstash Redis URL for rate limiting (shared by the contact form and chat) and the chat question log |
-| `UPSTASH_REDIS_REST_TOKEN` | Production | Upstash Redis token |
+
+| Variable                   | Required   | Description                                                                                         |
+| -------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| `RESEND_API_KEY`           | Yes        | Resend API key                                                                                      |
+| `RESEND_FROM_EMAIL`        | Yes        | Sender address (must be a Resend-verified domain), e.g. `Your Name <you@yourdomain.com>`            |
+| `RESEND_TO_EMAIL`          | Yes        | Where contact form submissions go                                                                   |
+| `ANTHROPIC_API_KEY`        | Yes        | Anthropic API key, powers the chat assistant                                                        |
+| `CHAT_MODEL`               | No         | Overrides the default chat model                                                                    |
+| `UPSTASH_REDIS_REST_URL`   | Production | Upstash Redis URL for rate limiting (shared by the contact form and chat) and the chat question log |
+| `UPSTASH_REDIS_REST_TOKEN` | Production | Upstash Redis token                                                                                 |
+
 
 Rate limiting and the chat question log are silently disabled in development if the Upstash variables are not set.
 
@@ -110,6 +118,8 @@ Unit tests cover the Zod validation schemas, both API routes' rate-limit/validat
 npm test         # run once
 npm run test:watch
 ```
+
+
 
 ## Deploy
 
