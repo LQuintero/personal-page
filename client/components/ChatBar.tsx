@@ -15,34 +15,39 @@ import type { DisplayMessage } from '@/client/hooks/useChatBar';
 // stays #41b390 in both modes, matching ContactForm's send button.
 const styles = {
   row:
-    'flex items-center gap-2 rounded-full pl-5 pr-2 py-2 ' +
+    'flex items-center gap-2 min-w-0 w-full rounded-full pl-5 pr-2 py-2 ' +
     'bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 ' +
     'focus-within:border-[#41b390]/60 transition-colors',
+  // min-w-0 lets the flex child shrink below its content width — without it,
+  // long typed text (or even the placeholder on narrow phones) forces the
+  // composer row wider than the viewport and the page scrolls sideways.
   input:
-    'flex-1 bg-transparent border-none outline-none text-sm ' +
+    'flex-1 min-w-0 bg-transparent border-none outline-none text-sm ' +
     'text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400',
   sendButton:
     'w-8 h-8 flex-shrink-0 rounded-full bg-[#41b390] text-white flex items-center justify-center ' +
     'hover:bg-[#369d7a] disabled:bg-[#41b390]/40 disabled:cursor-not-allowed transition-colors',
   bubbleAssistant:
-    'max-w-[85%] bg-black/5 dark:bg-white/10 text-gray-900 dark:text-gray-100 text-sm rounded-lg rounded-bl-sm px-3 py-2',
-  bubbleUser: 'max-w-[85%] bg-[#41b390] text-white text-sm rounded-lg rounded-br-sm px-3 py-2 ml-auto',
+    'max-w-[85%] min-w-0 break-words bg-black/5 dark:bg-white/10 text-gray-900 dark:text-gray-100 ' +
+    'text-sm rounded-lg rounded-bl-sm px-3 py-2',
+  bubbleUser:
+    'max-w-[85%] min-w-0 break-words bg-[#41b390] text-white text-sm rounded-lg rounded-br-sm px-3 py-2 ml-auto',
   footer: 'mt-2 text-xs text-gray-500 dark:text-gray-400 text-center',
   backdrop: 'fixed inset-0 z-50 bg-black/40 dark:bg-black/60',
   panel:
-    'fixed z-50 left-1/2 top-1/2 w-[min(100%-1.5rem,28rem)] -translate-x-1/2 -translate-y-1/2 ' +
-    'flex flex-col max-h-[min(70vh,32rem)] rounded-2xl border border-black/10 dark:border-white/10 ' +
-    'bg-white dark:bg-[#121212] shadow-xl',
+    'fixed z-50 left-1/2 top-1/2 w-[min(100%-1.5rem,28rem)] max-w-[100vw] -translate-x-1/2 -translate-y-1/2 ' +
+    'flex flex-col max-h-[min(70vh,32rem)] min-w-0 overflow-hidden rounded-2xl ' +
+    'border border-black/10 dark:border-white/10 bg-white dark:bg-[#121212] shadow-xl',
   panelHeader:
     'flex items-center justify-between gap-3 px-4 py-3 border-b border-black/10 dark:border-white/10',
   panelTitle: 'text-sm font-medium text-gray-900 dark:text-gray-100',
   closeButton:
     'w-8 h-8 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 ' +
     'hover:bg-black/5 dark:hover:bg-white/10 hover:text-gray-800 dark:hover:text-gray-100 transition-colors',
-  thread: 'flex-1 min-h-0 overflow-y-auto space-y-2 px-4 py-3',
-  panelComposer: 'px-4 py-3 border-t border-black/10 dark:border-white/10',
+  thread: 'flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden space-y-2 px-4 py-3',
+  panelComposer: 'min-w-0 px-4 py-3 border-t border-black/10 dark:border-white/10',
   panelFooter:
-    'flex items-center justify-between gap-3 px-4 py-2.5 border-t border-black/10 dark:border-white/10 ' +
+    'flex items-center justify-between gap-3 min-w-0 px-4 py-2.5 border-t border-black/10 dark:border-white/10 ' +
     'text-xs text-gray-500 dark:text-gray-400',
   clearButton:
     'underline hover:text-gray-700 dark:hover:text-gray-200 disabled:no-underline disabled:opacity-40 ' +
@@ -331,7 +336,7 @@ const ChatBar: React.FC = () => {
     );
 
   return (
-    <div>
+    <div className="w-full min-w-0">
       <ComposerRow
         input={input}
         setInput={setInput}
