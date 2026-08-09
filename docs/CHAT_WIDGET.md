@@ -47,17 +47,20 @@ app/api/chat/
                                 call the service -> respond, same shape as
                                 app/api/contact/route.ts.
 client/
-  hooks/useChatBar.ts           Message state, modal open/close/clear,
+  hooks/useChatBar.ts           Message state, expand/collapse/clear,
                                  history, send logic (in-memory only).
-  components/ChatBar.tsx        Home hero input + same-page modal overlay,
-                                 styled with the site's #41b390 accent.
+  components/ChatBar.tsx        Home hero input + inline expandable
+                                 transcript under it (name/tagline stay
+                                 visible), styled with the site's #41b390 accent.
 ```
 
 `ChatBar` is mounted from `HomePage` on `/`. The hero keeps a compact
-input; sending a question opens a modal overlay with a fixed-height
-scrollable transcript, composer, and Clear control. Closing the modal
-keeps the thread; Clear wipes it. Conversations are capped at 12 messages
-(matching the Zod schema) — when full, send is disabled until Clear.
+input; sending a question expands an inline panel under it with a short,
+scrollable transcript and Clear control — short enough that the name and
+tagline stay on screen above. Collapsing hides the panel but keeps the
+thread (focus the input or "Show conversation" to reopen); Clear wipes it
+and collapses. Conversations are capped at 12 messages (matching the Zod
+schema) — when full, send is disabled until Clear.
 
 ## Setup
 

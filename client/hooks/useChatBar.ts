@@ -35,6 +35,8 @@ export const useChatBar = (): UseChatBarReturn => {
   const [messages, setMessages] = useState<DisplayMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  // Whether the inline transcript panel under the composer is expanded.
+  // Collapsing keeps the messages; Clear wipes them and collapses.
   const [isOpen, setIsOpen] = useState(false);
 
   // History sent to the API — same shape as the display list here since
@@ -52,7 +54,8 @@ export const useChatBar = (): UseChatBarReturn => {
     historyRef.current = [];
     setInput('');
     setIsLoading(false);
-    setIsOpen(true);
+    // Collapse back to the compact composer so the hero stays uncluttered.
+    setIsOpen(false);
   }, []);
 
   const canSend = !isLoading && messages.length < MAX_CHAT_MESSAGES;

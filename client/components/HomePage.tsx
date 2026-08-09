@@ -18,7 +18,7 @@ export default function Home({ title, subtitle, list }: HomePageProps) {
           <List items={list} isHorizontal={true} />
         </div>
 
-        <div className="w-full max-w-md min-w-0 mx-auto mt-8 sm:mt-10 pointer-events-auto">
+        <div className="w-full max-w-lg min-w-0 mx-auto mt-8 sm:mt-10 pointer-events-auto">
           <ChatBar />
         </div>
       </div>
