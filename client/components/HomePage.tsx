@@ -14,7 +14,7 @@ export default function Home({ title, subtitle, list }: HomePageProps) {
           {subtitle}
         </p>
 
-        <div id="links" className="inline-block mt-[1rem] sm:mt-[1.575rem]">
+        <div id="links" className="inline-block mt-[0.95rem] sm:mt-[1.496rem]">
           <List items={list} isHorizontal={true} />
         </div>
 
