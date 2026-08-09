@@ -20,7 +20,7 @@
   align-items: center;
 }
 
-.hero {
+.identity {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -33,14 +33,8 @@
   min-height: 0;
   width: 100%;
   max-width: 32rem; /* max-w-lg */
-  margin-top: 1.5rem;
+  margin-top: clamp(3rem, 10vh, 5rem);
   display: flex;
   flex-direction: column;
   pointer-events: auto;
-}
-
-@media (min-width: 640px) {
-  .chatSlot {
-    margin-top: 2rem;
-  }
 }
