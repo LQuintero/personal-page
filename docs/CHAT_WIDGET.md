@@ -1,6 +1,6 @@
 # Chat widget
 
-An "AI Laura" chat widget, live on every page, backed by the Claude API.
+An "AI Laura" chat on the home page, backed by the Claude API.
 Visitors chat with a version of Laura grounded entirely in `chat/facts.md`
 — it can't invent projects, dates, or opinions that aren't in that file.
 
@@ -44,13 +44,17 @@ app/api/chat/
                                 call the service -> respond, same shape as
                                 app/api/contact/route.ts.
 client/
-  hooks/useChatWidget.ts        Message state, history, send logic.
-  components/ChatWidget.tsx     The UI: launcher button + panel, styled
-                                 with the site's existing #41b390 accent.
+  hooks/useChatBar.ts           Message state, modal open/close/clear,
+                                 history, send logic (in-memory only).
+  components/ChatBar.tsx        Home hero input + same-page modal overlay,
+                                 styled with the site's #41b390 accent.
 ```
 
-`ChatWidget` is mounted once in `app/layout.tsx`, so it shows on every
-route including `/contact`.
+`ChatBar` is mounted from `HomePage` on `/`. The hero keeps a compact
+input; sending a question opens a modal overlay with a fixed-height
+scrollable transcript, composer, and Clear control. Closing the modal
+keeps the thread; Clear wipes it. Conversations are capped at 12 messages
+(matching the Zod schema) — when full, send is disabled until Clear.
 
 ## Setup
 
@@ -92,7 +96,8 @@ limiting no-ops without them, same as the existing contact form), then
   to ignore instructions embedded in visitor messages.
 - **Rate limiting + input caps**: 20 messages / 5 minutes per IP via
   Upstash (same infra as the contact form), plus message-length and
-  conversation-length caps enforced by the shared Zod schema.
+  conversation-length caps enforced by the shared Zod schema and mirrored
+  in the client (12 messages max, Clear to continue).
 - **Sanitized errors**: `app/api/chat/route.ts` reuses the same
   `handleError` utility as the contact route, so failures never leak
   implementation details to the client.
