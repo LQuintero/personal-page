@@ -165,7 +165,7 @@ TypeScript, Python, Vue.js, Three.js, Tailwind CSS, Express.js, Node.js, MongoDB
 - It is grounded in a curated facts pack — it only answers from information Laura chose to share.
 - Built with Next.js, a dedicated API route, shared Zod validation, and rate limiting.
 - Includes privacy guardrails and prompt-injection resistance.
-- Designed as an inline conversation on the homepage rather than a floating chat bubble, so the thread reads as part of the page.
+- Laura chose an inline conversation on the homepage over a floating chat bubble deliberately: a floating bubble treats chat as an accessory, and she wanted the conversation to read as part of the page, with the assistant as a primary way to explore the site.
 - Laura iterated on the prompt, formatting, and response length based on live testing.
 
 

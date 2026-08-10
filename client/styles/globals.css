@@ -75,3 +75,9 @@ body {
     text-wrap: balance;
   }
 }
+
+@media (max-width: 640px) {
+  body:has([data-chat-active]) .theme-toggle {
+    top: max(0.25rem, env(safe-area-inset-top, 0px));
+  }
+}

@@ -68,7 +68,7 @@ export default function ThemeToggle() {
       type="button"
       onClick={handleToggle}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="fixed top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition-colors hover:text-[#41b390] focus-visible:outline-none focus-visible:text-[#41b390]"
+      className="theme-toggle fixed top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition-colors hover:text-[#41b390] focus-visible:outline-none focus-visible:text-[#41b390]"
     >
       {theme === null ? (
         <span className="h-4 w-4" aria-hidden="true" />
