@@ -6,9 +6,7 @@
 
 My personal site — and a working demo of how I build product. The centerpiece is an AI chat assistant I designed and shipped end-to-end: grounded prompting, build-time codegen, rate limiting, shared validation, and a deliberate UX that treats the conversation as part of the page rather than a widget bolted onto it.
 
-![Homepage with AI chat assistant](docs/assets/homepage-chat-demo.png)
-
-<!-- TODO: replace static screenshot with a short GIF of a live chat interaction -->
+![Chat assistant demo](docs/assets/chat-demo.gif)
 
 ## The AI chat assistant
 
