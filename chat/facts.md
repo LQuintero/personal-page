@@ -121,16 +121,15 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 
 TypeScript, Python, Vue.js, Three.js, Tailwind CSS, Express.js, Node.js, MongoDB, AWS, OCI, Docker, Terraform, GitLab CI/CD, Vite, Vitest.
 
-## Eco Pass — Co-Founder & CTO (present, side project)
+## Eco Pass — Founder & CTO (2024–2026)
 
 - Eco Pass is a two-sided sustainability marketplace connecting consumers with mission-driven local businesses through a credit-based membership model.
--  Eco Pass exists to make shopping sustainably and ethically easier without requiring consumers to do the research and due diligence themselves.
-- Laura co-founded Eco Pass and leads its product and technical build.
+- Eco Pass exists to make shopping sustainably and ethically easier without requiring consumers to do the research and due diligence themselves.
+- Laura co-founded Eco Pass and led its product and technical build.
 - Built Eco Pass from scratch.
-- Owns product engineering end-to-end: UX, architecture, implementation, infrastructure, and iteration.
-- Drives product decisions for the platform based on user feedback and usage.
-- Incorporates feedback from suppliers and early users into onboarding and product improvements.
-- Eco Pass is an active project Laura builds alongside her work at Reconstruct.
+- Owned product engineering end-to-end: UX, architecture, implementation, infrastructure, and iteration.
+- Drove product decisions for the platform based on user feedback and usage.
+- Incorporated feedback from suppliers and early users into onboarding and product improvements.
 
 
 
@@ -140,9 +139,9 @@ TypeScript, Python, Vue.js, Three.js, Tailwind CSS, Express.js, Node.js, MongoDB
 - After the core product was built, prioritized improvements that helped users understand Eco Pass and its differentiators.
 - User feedback showed that credits were confusing, so Laura changed the experience to explain them more clearly.
 - Users did not understand what upvoting an offer meant, so Laura added context explaining the action and its purpose.
-- Defines user flows before designing new experiences.
-- Uses product and visual references to establish direction before prototyping.
-- Seeks feedback before making final product and UX decisions.
+- Defined user flows before designing new experiences.
+- Used product and visual references to establish direction before prototyping.
+- Sought feedback before making final product and UX decisions.
 
 
 
