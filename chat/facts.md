@@ -158,6 +158,23 @@ TypeScript, Python, Vue.js, Three.js, Tailwind CSS, Express.js, Node.js, MongoDB
 
 
 
+### Eco Pass API — how it was built
+
+- The API is a TypeScript/NestJS service backed by PostgreSQL via Prisma, documented with an OpenAPI spec.
+- Credits, orders, and marketplace transactions are the core domains.
+- Users purchase credits via Stripe Checkout and spend them booking offers from suppliers.
+- Designed a two-phase hold/commit checkout flow — credits are held at checkout and only committed once the supplier confirms — to prevent double-spend.
+- Built the credit economy on an append-only, immutable ledger that serves as a complete audit trail of every purchase, reservation, redemption, refund, and expiration.
+- Designed expiring credit buckets with FIFO deduction so older credits are always spent first.
+- Made all mutation endpoints idempotent, so retried requests are safe and never duplicate side effects.
+- Built Stripe webhook processing with signature verification for automated, idempotent credit grants after payment.
+- Built scheduled background jobs to expire stale order holds and expired credits.
+- Designed the authentication and role-based authorization model for the platform end to end, including passwordless login.
+- Applied production-grade API hygiene: standardized error responses (RFC 7807), rate limiting, strict input validation, security headers, and structured logging with PII redaction.
+- Instrumented the service with health and version endpoints for observability and deployment verification.
+
+
+
 ## This chat assistant
 
 - Laura designed and built this assistant as a product feature of her portfolio site.
