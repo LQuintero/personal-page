@@ -96,13 +96,11 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 
 ### Authorization system at Reconstruct
 
-- Designed and led a project-scoped authorization system spanning the auth service, a shared client library, and downstream backend-for-frontend services.
-- Built and maintains a Node.js authentication service supporting enterprise SAML SSO and RBAC for multi-tenant access.
-- Built token issuance and validation, caching, and key-rotation for the authorization flow.
-- Owns the authorization contract end-to-end — from token issuance to caching to enforcement in downstream services.
+- Enhances and maintains Reconstruct's Node.js authentication service, supporting enterprise SAML SSO and RBAC for multi-tenant access.
+- Contributed to a project-scoped authorization system spanning the auth service, a shared client library, and downstream backend-for-frontend services.
+- Implemented real-time JWT signing-key rotation using Redis pub/sub, with an AWS Secrets Manager-backed fallback.
 - Delivered feature work across BFF services (compliance features, inspection/measurement APIs, observability improvements).
 - Led infrastructure modernization: Node 22 migration, Mocha→Jest test migration, adoption of Vitest, and CI/CD pipeline setup.
-
 
 
 ### Platform and architecture work
