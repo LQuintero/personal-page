@@ -3,7 +3,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
   "style-src 'self' 'unsafe-inline'",
-  "connect-src 'self' https://vitals.vercel-insights.com",
+  "connect-src 'self' https://vitals.vercel-insights.com https://vercel-insights.com",
   "frame-ancestors 'none'",
 ].join('; ');
 

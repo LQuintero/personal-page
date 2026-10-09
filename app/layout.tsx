@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Oswald } from "next/font/google";
 import siteConfig from '@/client/site.config';
 import ThemeToggle from '@/client/components/ThemeToggle';
@@ -42,6 +43,7 @@ export default function RootLayout({
         </div>
         <ThemeToggle />
         <Analytics/>
+        <SpeedInsights />
       </body>
     </html>
   );
