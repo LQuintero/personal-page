@@ -1,12 +1,15 @@
 import { NextRequest } from 'next/server';
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { checkRateLimit } = vi.hoisted(() => ({ checkRateLimit: vi.fn() }));
+const { checkRateLimit, checkContactDailyLimit } = vi.hoisted(() => ({
+  checkRateLimit: vi.fn(),
+  checkContactDailyLimit: vi.fn(),
+}));
 const { sendEmail } = vi.hoisted(() => ({ sendEmail: vi.fn() }));
 
 vi.mock('@/server/utils/rateLimiter', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/server/utils/rateLimiter')>();
-  return { ...actual, checkRateLimit };
+  return { ...actual, checkRateLimit, checkContactDailyLimit };
 });
 vi.mock('@/server/services/email.service', () => ({ sendEmail }));
 
@@ -17,6 +20,13 @@ const allowedRateLimit = {
   limit: 5,
   remaining: 4,
   reset: Date.now() + 10 * 60 * 1000,
+};
+
+const allowedDailyLimit = {
+  success: true,
+  limit: 30,
+  remaining: 29,
+  reset: Date.now() + 24 * 60 * 60 * 1000,
 };
 
 function makeRequest(body: unknown) {
@@ -34,6 +44,8 @@ describe('POST /api/contact', () => {
   beforeEach(() => {
     process.env.RESEND_FROM_EMAIL = 'me@example.com';
     process.env.RESEND_TO_EMAIL = 'inbox@example.com';
+    checkRateLimit.mockResolvedValue(allowedRateLimit);
+    checkContactDailyLimit.mockResolvedValue(allowedDailyLimit);
   });
 
   afterEach(() => {
@@ -60,6 +72,28 @@ describe('POST /api/contact', () => {
 
     expect(response.status).toBe(429);
     expect(data.ok).toBe(false);
+    expect(data.scope).toBe('ip');
+    expect(sendEmail).not.toHaveBeenCalled();
+    expect(checkContactDailyLimit).not.toHaveBeenCalled();
+  });
+
+  it('returns 429 when the daily cap has been exceeded', async () => {
+    checkContactDailyLimit.mockResolvedValue({
+      success: false,
+      limit: 30,
+      remaining: 0,
+      reset: Date.now() + 60_000,
+    });
+
+    const response = await POST(
+      makeRequest({ name: 'Ada', email: 'ada@example.com', message: 'Hello there, world!' })
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(429);
+    expect(data.ok).toBe(false);
+    expect(data.scope).toBe('site');
+    expect(data.error).toBe('Too many requests today. Please try again tomorrow.');
     expect(sendEmail).not.toHaveBeenCalled();
   });
 

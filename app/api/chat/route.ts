@@ -10,6 +10,8 @@ import {
 } from '@/server/utils/rateLimiter';
 import { validateChatRequest } from '@/shared/validators/chat.validator';
 
+export const maxDuration = 20;
+
 function rateLimited(result: RateLimitResult, error: string, scope: 'ip' | 'site') {
   const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
   return NextResponse.json(

@@ -79,10 +79,13 @@ function stripStrayMarkdown(content: string): string {
     .replace(/(?<![\w_])_([^_\n]+)_(?![\w_])/g, '$1');
 }
 
-/** Renders "[/contact](/contact)"-style markdown links as real Next.js <Link>s. */
-function renderMessageContent(rawContent: string, isUser: boolean) {
+/**
+ * Renders the contact-page link the assistant is allowed to use. Any other
+ * destination, including protocol-relative "//…" URLs, stays plain text.
+ */
+export function renderMessageContent(rawContent: string, isUser: boolean) {
   const content = stripStrayMarkdown(rawContent);
-  const linkPattern = /\[([^\]]+)\]\((\/[^\s)]+)\)/g;
+  const linkPattern = /\[([^\]]+)\]\(\/contact\)/g;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -95,7 +98,7 @@ function renderMessageContent(rawContent: string, isUser: boolean) {
     parts.push(
       <Link
         key={key++}
-        href={match[2]}
+        href="/contact"
         className={isUser ? 'underline text-white' : 'underline text-[#2f8f71] dark:text-[#5ecda3]'}
       >
         {match[1]}

@@ -140,7 +140,12 @@ export const useContactForm = (): UseContactFormReturn => {
       if (response.status === 400 && data?.field) {
         setErrors({ [data.field as keyof ContactFormData]: data.error });
       } else if (response.status === 429) {
-        setErrors({ general: 'Too many requests. Please try again later.' });
+        setErrors({
+          general:
+            data?.scope === 'site'
+              ? 'Too many requests today. Please try again tomorrow.'
+              : 'Too many requests. Please try again later.',
+        });
       } else {
         setErrors({ general: 'Failed to send message. Please try again.' });
       }

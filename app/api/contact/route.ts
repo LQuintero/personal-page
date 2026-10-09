@@ -1,29 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '@/server/services/email.service';
 import { handleError } from '@/server/utils/errorHandler';
-import { checkRateLimit, rateLimitHeaders } from '@/server/utils/rateLimiter';
+import {
+  checkContactDailyLimit,
+  checkRateLimit,
+  rateLimitHeaders,
+  type RateLimitResult,
+} from '@/server/utils/rateLimiter';
 import { validateContactForm } from '@/shared/validators/contact.validator';
+
+function rateLimited(result: RateLimitResult, error: string, scope: 'ip' | 'site') {
+  const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
+  return NextResponse.json(
+    { ok: false, error, retryAfter, scope },
+    {
+      status: 429,
+      headers: {
+        ...rateLimitHeaders(result),
+        'Retry-After': retryAfter.toString(),
+      },
+    }
+  );
+}
 
 export async function POST(request: NextRequest) {
   try {
-    // Check rate limit before processing the request
+    // Per-address window first, so a blocked address cannot burn the daily cap.
     const rateLimitResult = await checkRateLimit(request);
-    
+
     if (!rateLimitResult.success) {
-      const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
-      return NextResponse.json(
-        {
-          ok: false,
-          error: 'Too many requests. Please try again later.',
-          retryAfter,
-        },
-        {
-          status: 429,
-          headers: {
-            ...rateLimitHeaders(rateLimitResult),
-            'Retry-After': retryAfter.toString(),
-          },
-        }
+      return rateLimited(
+        rateLimitResult,
+        'Too many requests. Please try again later.',
+        'ip'
+      );
+    }
+
+    const dailyLimitResult = await checkContactDailyLimit(request);
+
+    if (!dailyLimitResult.success) {
+      return rateLimited(
+        dailyLimitResult,
+        'Too many requests today. Please try again tomorrow.',
+        'site'
       );
     }
 

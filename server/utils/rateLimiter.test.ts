@@ -1,11 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { limit } = vi.hoisted(() => ({ limit: vi.fn() }));
+const { limit, limiterOptions } = vi.hoisted(() => ({
+  limit: vi.fn(),
+  limiterOptions: [] as { analytics?: boolean; prefix?: string }[],
+}));
 
 vi.mock('@upstash/ratelimit', () => ({
   Ratelimit: class {
     static slidingWindow() {
       return 'sliding-window';
+    }
+    constructor(opts: { analytics?: boolean; prefix?: string }) {
+      limiterOptions.push(opts);
     }
     limit(...args: unknown[]) {
       return limit(...args);
@@ -17,7 +23,8 @@ vi.mock('@/server/utils/redis', () => ({
   getRedisClientOrNull: () => ({ mocked: true }),
 }));
 
-const { checkChatDailyLimit, checkChatRateLimit, getClientIP } = await import('./rateLimiter');
+const { checkChatDailyLimit, checkChatRateLimit, checkContactDailyLimit, getClientIP } =
+  await import('./rateLimiter');
 
 function requestWith(headers: Record<string, string>) {
   return new Request('http://localhost/api/chat', { headers });
@@ -74,5 +81,28 @@ describe('chat limits', () => {
 
     expect(limit).toHaveBeenCalledWith('site');
     expect(limit).not.toHaveBeenCalledWith('203.0.113.5');
+  });
+});
+
+describe('contact limits', () => {
+  beforeEach(() => {
+    limit.mockResolvedValue(allowed);
+    limit.mockClear();
+  });
+
+  it('counts every contact submission against one site-wide daily bucket', async () => {
+    const request = requestWith({ 'x-vercel-forwarded-for': '203.0.113.5' });
+
+    await checkContactDailyLimit(request);
+
+    expect(limit).toHaveBeenCalledWith('site');
+    expect(limit).not.toHaveBeenCalledWith('203.0.113.5');
+  });
+
+  it('does not send rate-limit analytics', async () => {
+    await checkContactDailyLimit(requestWith({ 'x-vercel-forwarded-for': '203.0.113.5' }));
+
+    expect(limiterOptions.length).toBeGreaterThan(0);
+    expect(limiterOptions.every((opts) => opts.analytics === false)).toBe(true);
   });
 });

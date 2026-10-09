@@ -3,6 +3,7 @@ import { getRedisClientOrNull } from '@/server/utils/redis';
 
 const CHAT_LOG_KEY = 'chat:log';
 const CHAT_LOG_MAX_ENTRIES = 500;
+const CHAT_LOG_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
 // Lazy so importing this module never throws when Upstash env vars are
 // missing (the normal state in local dev, where logging just no-ops —
@@ -35,6 +36,40 @@ export function isNoAnswerResponse(reply: string): boolean {
   );
 }
 
+function storedChatLogValue(raw: unknown): string | null {
+  if (typeof raw === 'string') return raw;
+  if (raw && typeof raw === 'object') return JSON.stringify(raw);
+  return null;
+}
+
+function chatLogTimestamp(raw: unknown): number | null {
+  const value = storedChatLogValue(raw);
+  if (!value) return null;
+  try {
+    const parsed = JSON.parse(value) as { ts?: unknown };
+    if (typeof parsed.ts !== 'string') return null;
+    const ts = Date.parse(parsed.ts);
+    return Number.isNaN(ts) ? null : ts;
+  } catch {
+    return null;
+  }
+}
+
+/** Drops questions older than 30 days. Newer entries written alongside them stay. */
+async function pruneExpiredChatLog(client: Redis): Promise<void> {
+  const entries = await client.lrange(CHAT_LOG_KEY, 0, -1);
+  if (!Array.isArray(entries)) return;
+
+  const cutoff = Date.now() - CHAT_LOG_MAX_AGE_MS;
+  for (const raw of entries) {
+    const ts = chatLogTimestamp(raw);
+    const stored = storedChatLogValue(raw);
+    if (ts !== null && stored !== null && ts < cutoff) {
+      await client.lrem(CHAT_LOG_KEY, 1, stored);
+    }
+  }
+}
+
 export async function logChatMessage(entry: ChatLogEntry): Promise<void> {
   try {
     const client = getRedis();
@@ -45,6 +80,8 @@ export async function logChatMessage(entry: ChatLogEntry): Promise<void> {
       .lpush(CHAT_LOG_KEY, JSON.stringify(entry))
       .ltrim(CHAT_LOG_KEY, 0, CHAT_LOG_MAX_ENTRIES - 1)
       .exec();
+
+    await pruneExpiredChatLog(client);
   } catch {
     // Logging must never break the chat — swallow and move on.
   }

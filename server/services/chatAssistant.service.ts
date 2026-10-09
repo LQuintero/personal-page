@@ -11,6 +11,7 @@ const DEFAULT_MODEL = 'claude-haiku-4-5-20251001';
 // should rarely hit it (an abrupt mid-sentence cutoff is worse than a
 // slightly-too-long answer, so don't set this too tight).
 const MAX_TOKENS = 300;
+const REQUEST_TIMEOUT_MS = 15_000;
 
 function getModel(): string {
   return process.env.CHAT_MODEL || DEFAULT_MODEL;
@@ -41,6 +42,7 @@ export async function getChatReply(messages: ChatMessage[]): Promise<GetChatRepl
 
     const response = await fetch(ANTHROPIC_API_URL, {
       method: 'POST',
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,

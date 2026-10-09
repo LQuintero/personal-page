@@ -27,6 +27,18 @@ const CONTACT_LIMITER: LimiterConfig = {
 };
 
 /**
+ * Whole-site daily cap for the contact form: 30 messages per 24 hours.
+ * The per-IP window alone is about 720 emails a day from one address.
+ */
+const CONTACT_DAILY_LIMITER: LimiterConfig = {
+  prefix: 'ratelimit:contact:daily',
+  limit: 30,
+  window: '1 d',
+  windowMs: 24 * 60 * 60 * 1000,
+  identifier: 'site',
+};
+
+/**
  * Chat widget: 20 messages per 5 minutes per IP. Chat is a conversation,
  * not a single submission, so this is intentionally more generous than the
  * contact form. A distinct prefix means it never shares a bucket with
@@ -70,7 +82,7 @@ function getLimiterOrNull(config: LimiterConfig): Ratelimit | null {
   const limiter = new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(config.limit, config.window),
-    analytics: true,
+    analytics: false,
     prefix: config.prefix,
   });
   limiterCache.set(config.prefix, limiter);
@@ -140,6 +152,11 @@ async function checkLimit(request: Request, config: LimiterConfig): Promise<Rate
 /** Checks if the request should be rate limited (contact form: 5 / 10 min). */
 export async function checkRateLimit(request: Request): Promise<RateLimitResult> {
   return checkLimit(request, CONTACT_LIMITER);
+}
+
+/** Site-wide daily cap for the contact form (30 / 24 h). */
+export async function checkContactDailyLimit(request: Request): Promise<RateLimitResult> {
+  return checkLimit(request, CONTACT_DAILY_LIMITER);
 }
 
 /** Checks if the request should be rate limited (chat widget: 20 / 5 min). */
