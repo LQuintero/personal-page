@@ -6,14 +6,16 @@ import {
   checkChatDailyLimit,
   checkChatRateLimit,
   rateLimitHeaders,
+  retryAfterSeconds,
   type RateLimitResult,
 } from '@/server/utils/rateLimiter';
+import { chatDailyLimitMessage } from '@/shared/formatRetryAfter';
 import { validateChatRequest } from '@/shared/validators/chat.validator';
 
 export const maxDuration = 20;
 
 function rateLimited(result: RateLimitResult, error: string, scope: 'ip' | 'site') {
-  const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
+  const retryAfter = retryAfterSeconds(result);
   return NextResponse.json(
     { ok: false, error, retryAfter, scope },
     {
@@ -38,18 +40,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Checked after the per-IP window so one noisy address cannot burn
-    // the shared daily allowance on requests that were already rejected.
-    const dailyLimitResult = await checkChatDailyLimit(request);
-
-    if (!dailyLimitResult.success) {
-      return rateLimited(
-        dailyLimitResult,
-        'The assistant has reached its daily limit. Please try again tomorrow.',
-        'site'
-      );
-    }
-
     const body = await request.json();
 
     const validation = validateChatRequest(body);
@@ -59,6 +49,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { ok: false, error: firstError.message },
         { status: 400 }
+      );
+    }
+
+    // After the per-IP window and validation. A blocked address, or a body
+    // that will not call the model, must not spend the shared daily budget.
+    const dailyLimitResult = await checkChatDailyLimit(request);
+
+    if (!dailyLimitResult.success) {
+      return rateLimited(
+        dailyLimitResult,
+        chatDailyLimitMessage(retryAfterSeconds(dailyLimitResult)),
+        'site'
       );
     }
 

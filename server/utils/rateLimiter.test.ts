@@ -2,7 +2,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { limit, limiterOptions } = vi.hoisted(() => ({
   limit: vi.fn(),
-  limiterOptions: [] as { analytics?: boolean; prefix?: string }[],
+  limiterOptions: [] as {
+    analytics?: boolean;
+    ephemeralCache?: false | Map<string, number>;
+    prefix?: string;
+  }[],
 }));
 
 vi.mock('@upstash/ratelimit', () => ({
@@ -10,7 +14,11 @@ vi.mock('@upstash/ratelimit', () => ({
     static slidingWindow() {
       return 'sliding-window';
     }
-    constructor(opts: { analytics?: boolean; prefix?: string }) {
+    constructor(opts: {
+      analytics?: boolean;
+      ephemeralCache?: false | Map<string, number>;
+      prefix?: string;
+    }) {
       limiterOptions.push(opts);
     }
     limit(...args: unknown[]) {
@@ -99,10 +107,12 @@ describe('contact limits', () => {
     expect(limit).not.toHaveBeenCalledWith('203.0.113.5');
   });
 
-  it('does not send rate-limit analytics', async () => {
+  it('does not cache denials in memory or send rate-limit analytics', async () => {
     await checkContactDailyLimit(requestWith({ 'x-vercel-forwarded-for': '203.0.113.5' }));
 
     expect(limiterOptions.length).toBeGreaterThan(0);
-    expect(limiterOptions.every((opts) => opts.analytics === false)).toBe(true);
+    expect(
+      limiterOptions.every((opts) => opts.analytics === false && opts.ephemeralCache === false)
+    ).toBe(true);
   });
 });

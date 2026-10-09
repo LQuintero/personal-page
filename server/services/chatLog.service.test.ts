@@ -1,17 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { lrange, lrem, exec, lpush, ltrim } = vi.hoisted(() => ({
+const { lrange, lrem, exec, lpush, ltrim, evalCommand } = vi.hoisted(() => ({
   lrange: vi.fn(),
   lrem: vi.fn(),
   exec: vi.fn(),
   lpush: vi.fn(),
   ltrim: vi.fn(),
+  evalCommand: vi.fn(),
 }));
 
 vi.mock('@/server/utils/redis', () => ({
   getRedisClientOrNull: () => ({
     lrange,
     lrem,
+    eval: evalCommand,
     pipeline: () => {
       const chain = {
         lpush: (...args: unknown[]) => {
@@ -62,30 +64,44 @@ describe('logChatMessage', () => {
     exec.mockReset();
     lpush.mockReset();
     ltrim.mockReset();
+    evalCommand.mockReset();
     exec.mockResolvedValue([]);
-    lrem.mockResolvedValue(1);
+    evalCommand.mockResolvedValue(0);
   });
 
-  it('removes questions older than 30 days and leaves newer ones', async () => {
-    const fresh = JSON.stringify({
-      ts: new Date().toISOString(),
-      question: 'What has she built?',
-      answered: true,
-    });
-    const expired = JSON.stringify({
-      ts: new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString(),
-      question: 'old question',
-      answered: false,
-    });
-    lrange.mockResolvedValue([fresh, expired]);
-
+  it('prunes questions older than 30 days in one Redis call', async () => {
     await logChatMessage({
       ts: new Date().toISOString(),
       question: 'What has she built?',
       answered: true,
     });
 
-    expect(lrem).toHaveBeenCalledTimes(1);
-    expect(lrem).toHaveBeenCalledWith('chat:log', 1, expired);
+    expect(evalCommand).toHaveBeenCalledTimes(1);
+    expect(lrange).not.toHaveBeenCalled();
+    expect(lrem).not.toHaveBeenCalled();
+
+    const [script, keys, args] = evalCommand.mock.calls[0];
+    expect(keys).toEqual(['chat:log']);
+    expect(script).toContain('decoded.ts < cutoff');
+    expect(script).toContain('LREM');
+
+    const cutoff = Date.parse(args[0]);
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    expect(cutoff).toBeGreaterThan(thirtyDaysAgo - 5_000);
+    expect(cutoff).toBeLessThan(thirtyDaysAgo + 5_000);
+  });
+
+  it('still logs when pruning fails', async () => {
+    evalCommand.mockRejectedValue(new Error('redis down'));
+
+    await expect(
+      logChatMessage({
+        ts: new Date().toISOString(),
+        question: 'What has she built?',
+        answered: true,
+      })
+    ).resolves.toBeUndefined();
+
+    expect(lpush).toHaveBeenCalled();
   });
 });

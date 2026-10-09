@@ -36,38 +36,27 @@ export function isNoAnswerResponse(reply: string): boolean {
   );
 }
 
-function storedChatLogValue(raw: unknown): string | null {
-  if (typeof raw === 'string') return raw;
-  if (raw && typeof raw === 'object') return JSON.stringify(raw);
-  return null;
-}
-
-function chatLogTimestamp(raw: unknown): number | null {
-  const value = storedChatLogValue(raw);
-  if (!value) return null;
-  try {
-    const parsed = JSON.parse(value) as { ts?: unknown };
-    if (typeof parsed.ts !== 'string') return null;
-    const ts = Date.parse(parsed.ts);
-    return Number.isNaN(ts) ? null : ts;
-  } catch {
-    return null;
-  }
-}
+// One round trip. Entries are JSON from Date#toISOString, so the timestamp
+// strings sort in time order and the cutoff uses that same format.
+const PRUNE_EXPIRED_CHAT_LOG_SCRIPT = `
+local key = KEYS[1]
+local cutoff = ARGV[1]
+local entries = redis.call('LRANGE', key, 0, -1)
+for _, raw in ipairs(entries) do
+  if type(raw) == 'string' then
+    local ok, decoded = pcall(cjson.decode, raw)
+    if ok and type(decoded) == 'table' and type(decoded.ts) == 'string' and decoded.ts < cutoff then
+      redis.call('LREM', key, 1, raw)
+    end
+  end
+end
+return 0
+`;
 
 /** Drops questions older than 30 days. Newer entries written alongside them stay. */
 async function pruneExpiredChatLog(client: Redis): Promise<void> {
-  const entries = await client.lrange(CHAT_LOG_KEY, 0, -1);
-  if (!Array.isArray(entries)) return;
-
-  const cutoff = Date.now() - CHAT_LOG_MAX_AGE_MS;
-  for (const raw of entries) {
-    const ts = chatLogTimestamp(raw);
-    const stored = storedChatLogValue(raw);
-    if (ts !== null && stored !== null && ts < cutoff) {
-      await client.lrem(CHAT_LOG_KEY, 1, stored);
-    }
-  }
+  const cutoff = new Date(Date.now() - CHAT_LOG_MAX_AGE_MS).toISOString();
+  await client.eval(PRUNE_EXPIRED_CHAT_LOG_SCRIPT, [CHAT_LOG_KEY], [cutoff]);
 }
 
 export async function logChatMessage(entry: ChatLogEntry): Promise<void> {

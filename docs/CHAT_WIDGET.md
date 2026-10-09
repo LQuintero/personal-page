@@ -44,9 +44,9 @@ shared/
     chat.validator.ts          Zod schema for chat requests, same pattern
                                 as contact.validator.ts.
 app/api/chat/
-  route.ts                     POST /api/chat. Rate limit -> validate ->
-                                call the service -> respond, same shape as
-                                app/api/contact/route.ts.
+  route.ts                     POST /api/chat. Per-IP limit -> validate ->
+                                daily cap -> call the service -> respond,
+                                same shape as app/api/contact/route.ts.
 client/
   hooks/useChatBar.ts           Message state, expand/collapse/clear,
                                  history, send logic (in-memory only).

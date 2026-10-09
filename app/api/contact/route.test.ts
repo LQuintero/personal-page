@@ -82,7 +82,7 @@ describe('POST /api/contact', () => {
       success: false,
       limit: 30,
       remaining: 0,
-      reset: Date.now() + 60_000,
+      reset: Date.now() + 2 * 60 * 60 * 1000,
     });
 
     const response = await POST(
@@ -93,7 +93,7 @@ describe('POST /api/contact', () => {
     expect(response.status).toBe(429);
     expect(data.ok).toBe(false);
     expect(data.scope).toBe('site');
-    expect(data.error).toBe('Too many requests today. Please try again tomorrow.');
+    expect(data.error).toBe('Too many requests today. Please try again in 2 hours.');
     expect(sendEmail).not.toHaveBeenCalled();
   });
 
@@ -109,6 +109,7 @@ describe('POST /api/contact', () => {
     expect(data.ok).toBe(false);
     expect(data.field).toBe('email');
     expect(sendEmail).not.toHaveBeenCalled();
+    expect(checkContactDailyLimit).not.toHaveBeenCalled();
   });
 
   it('sends the email and returns 200 on a valid submission', async () => {
@@ -129,5 +130,32 @@ describe('POST /api/contact', () => {
         replyTo: 'ada@example.com',
       })
     );
+    expect(checkContactDailyLimit).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not spend the daily cap when the body is not JSON', async () => {
+    const response = await POST(
+      new NextRequest('http://localhost/api/contact', {
+        method: 'POST',
+        body: 'not-json',
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+
+    expect(response.status).toBe(500);
+    expect(checkContactDailyLimit).not.toHaveBeenCalled();
+    expect(sendEmail).not.toHaveBeenCalled();
+  });
+
+  it('does not spend the daily cap when email is not configured', async () => {
+    delete process.env.RESEND_FROM_EMAIL;
+
+    const response = await POST(
+      makeRequest({ name: 'Ada', email: 'ada@example.com', message: 'Hello there, world!' })
+    );
+
+    expect(response.status).toBe(500);
+    expect(checkContactDailyLimit).not.toHaveBeenCalled();
+    expect(sendEmail).not.toHaveBeenCalled();
   });
 });

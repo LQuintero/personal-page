@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { contactDailyLimitMessage } from '@/shared/formatRetryAfter';
 import { ContactFormData, validateContactForm } from '@/shared/validators/contact.validator';
 
 export type FormErrors = Partial<Record<keyof ContactFormData, string>> & { general?: string };
@@ -143,7 +144,7 @@ export const useContactForm = (): UseContactFormReturn => {
         setErrors({
           general:
             data?.scope === 'site'
-              ? 'Too many requests today. Please try again tomorrow.'
+              ? contactDailyLimitMessage(data?.retryAfter)
               : 'Too many requests. Please try again later.',
         });
       } else {

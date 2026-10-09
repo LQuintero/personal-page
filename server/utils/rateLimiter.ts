@@ -83,6 +83,11 @@ function getLimiterOrNull(config: LimiterConfig): Ratelimit | null {
     redis,
     limiter: Ratelimit.slidingWindow(config.limit, config.window),
     analytics: false,
+    // The default in-memory cache blocks an identifier until the bucket
+    // ends, on that instance only, without asking Redis again. The daily
+    // limiters share the identifier "site", so one denial would keep a warm
+    // instance rejecting everyone after the sliding window had freed slots.
+    ephemeralCache: false,
     prefix: config.prefix,
   });
   limiterCache.set(config.prefix, limiter);
@@ -170,6 +175,11 @@ export async function checkChatRateLimit(request: Request): Promise<RateLimitRes
  */
 export async function checkChatDailyLimit(request: Request): Promise<RateLimitResult> {
   return checkLimit(request, CHAT_DAILY_LIMITER);
+}
+
+/** Whole seconds until `result.reset`, never less than 1. */
+export function retryAfterSeconds(result: RateLimitResult): number {
+  return Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
 }
 
 /** Standard X-RateLimit-* response headers for a checked request. */

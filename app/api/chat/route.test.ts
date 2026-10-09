@@ -68,6 +68,7 @@ describe('POST /api/chat', () => {
     expect(response.status).toBe(429);
     expect(data.ok).toBe(false);
     expect(getChatReply).not.toHaveBeenCalled();
+    expect(checkChatDailyLimit).not.toHaveBeenCalled();
   });
 
   it('returns 429 when the site-wide daily cap is exhausted', async () => {
@@ -76,7 +77,7 @@ describe('POST /api/chat', () => {
       success: false,
       limit: 200,
       remaining: 0,
-      reset: Date.now() + 60_000,
+      reset: Date.now() + 2 * 60 * 60 * 1000,
     });
 
     const response = await POST(
@@ -87,6 +88,8 @@ describe('POST /api/chat', () => {
     expect(response.status).toBe(429);
     expect(data.ok).toBe(false);
     expect(data.scope).toBe('site');
+    expect(data.error).toContain('2 hours');
+    expect(data.error).not.toContain('tomorrow');
     expect(getChatReply).not.toHaveBeenCalled();
     expect(logChatMessage).not.toHaveBeenCalled();
   });
@@ -100,6 +103,7 @@ describe('POST /api/chat', () => {
     expect(response.status).toBe(400);
     expect(data.ok).toBe(false);
     expect(getChatReply).not.toHaveBeenCalled();
+    expect(checkChatDailyLimit).not.toHaveBeenCalled();
   });
 
   it('returns 400 when a message role is invalid', async () => {
@@ -112,6 +116,23 @@ describe('POST /api/chat', () => {
 
     expect(response.status).toBe(400);
     expect(data.ok).toBe(false);
+    expect(getChatReply).not.toHaveBeenCalled();
+    expect(checkChatDailyLimit).not.toHaveBeenCalled();
+  });
+
+  it('does not spend the daily cap when the body is not JSON', async () => {
+    checkChatRateLimit.mockResolvedValue(allowedRateLimit);
+
+    const response = await POST(
+      new NextRequest('http://localhost/api/chat', {
+        method: 'POST',
+        body: 'not-json',
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+
+    expect(response.status).toBe(500);
+    expect(checkChatDailyLimit).not.toHaveBeenCalled();
     expect(getChatReply).not.toHaveBeenCalled();
   });
 
@@ -128,6 +149,9 @@ describe('POST /api/chat', () => {
     expect(data.ok).toBe(true);
     expect(data.reply).toBe("I'm building Eco Pass on the side.");
     expect(getChatReply).toHaveBeenCalledWith([{ role: 'user', content: 'What are you working on?' }]);
+    expect(checkChatRateLimit.mock.invocationCallOrder[0]).toBeLessThan(
+      checkChatDailyLimit.mock.invocationCallOrder[0]
+    );
   });
 
   it('logs the question as answered on a substantive reply', async () => {
@@ -177,6 +201,7 @@ describe('POST /api/chat', () => {
     await POST(makeRequest({ messages: [] }));
 
     expect(logChatMessage).not.toHaveBeenCalled();
+    expect(checkChatDailyLimit).not.toHaveBeenCalled();
   });
 
   it('returns a sanitized 500 error when the chat service throws', async () => {

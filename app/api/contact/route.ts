@@ -5,12 +5,14 @@ import {
   checkContactDailyLimit,
   checkRateLimit,
   rateLimitHeaders,
+  retryAfterSeconds,
   type RateLimitResult,
 } from '@/server/utils/rateLimiter';
+import { contactDailyLimitMessage } from '@/shared/formatRetryAfter';
 import { validateContactForm } from '@/shared/validators/contact.validator';
 
 function rateLimited(result: RateLimitResult, error: string, scope: 'ip' | 'site') {
-  const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
+  const retryAfter = retryAfterSeconds(result);
   return NextResponse.json(
     { ok: false, error, retryAfter, scope },
     {
@@ -33,16 +35,6 @@ export async function POST(request: NextRequest) {
         rateLimitResult,
         'Too many requests. Please try again later.',
         'ip'
-      );
-    }
-
-    const dailyLimitResult = await checkContactDailyLimit(request);
-
-    if (!dailyLimitResult.success) {
-      return rateLimited(
-        dailyLimitResult,
-        'Too many requests today. Please try again tomorrow.',
-        'site'
       );
     }
 
@@ -70,6 +62,18 @@ export async function POST(request: NextRequest) {
 
     if (!fromEmail || !recipientEmail) {
       throw new Error('RESEND_FROM_EMAIL and RESEND_TO_EMAIL environment variables are required');
+    }
+
+    // After validation and config checks, so a rejected body cannot spend
+    // the shared daily allowance. The per-IP window above still runs first.
+    const dailyLimitResult = await checkContactDailyLimit(request);
+
+    if (!dailyLimitResult.success) {
+      return rateLimited(
+        dailyLimitResult,
+        contactDailyLimitMessage(retryAfterSeconds(dailyLimitResult)),
+        'site'
+      );
     }
 
     await sendEmail({

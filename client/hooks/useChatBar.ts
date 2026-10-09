@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { chatDailyLimitClientMessage } from '@/shared/formatRetryAfter';
 import type { ChatMessage } from '@/shared/validators/chat.validator';
 
 export interface DisplayMessage {
@@ -94,7 +95,7 @@ export const useChatBar = (): UseChatBarReturn => {
         const content =
           response.status === 429
             ? data?.scope === 'site'
-              ? 'The assistant has hit its daily limit. Try again tomorrow, or reach me directly [here](/contact).'
+              ? chatDailyLimitClientMessage(data?.retryAfter)
               : "You're sending messages quickly — give it a few minutes and try again."
             : fallback;
         setMessages((prev) => [...prev, { id: nextId(), role: 'assistant', content }]);
