@@ -93,7 +93,9 @@ export const useChatBar = (): UseChatBarReturn => {
       } else {
         const content =
           response.status === 429
-            ? "You're sending messages quickly — give it a few minutes and try again."
+            ? data?.scope === 'site'
+              ? 'The assistant has hit its daily limit. Try again tomorrow, or reach me directly [here](/contact).'
+              : "You're sending messages quickly — give it a few minutes and try again."
             : fallback;
         setMessages((prev) => [...prev, { id: nextId(), role: 'assistant', content }]);
       }

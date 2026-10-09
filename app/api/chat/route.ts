@@ -2,28 +2,49 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getChatReply } from '@/server/services/chatAssistant.service';
 import { isNoAnswerResponse, logChatMessage } from '@/server/services/chatLog.service';
 import { handleError } from '@/server/utils/errorHandler';
-import { checkChatRateLimit, rateLimitHeaders } from '@/server/utils/rateLimiter';
+import {
+  checkChatDailyLimit,
+  checkChatRateLimit,
+  rateLimitHeaders,
+  type RateLimitResult,
+} from '@/server/utils/rateLimiter';
 import { validateChatRequest } from '@/shared/validators/chat.validator';
+
+function rateLimited(result: RateLimitResult, error: string, scope: 'ip' | 'site') {
+  const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
+  return NextResponse.json(
+    { ok: false, error, retryAfter, scope },
+    {
+      status: 429,
+      headers: {
+        ...rateLimitHeaders(result),
+        'Retry-After': retryAfter.toString(),
+      },
+    }
+  );
+}
 
 export async function POST(request: NextRequest) {
   try {
     const rateLimitResult = await checkChatRateLimit(request);
 
     if (!rateLimitResult.success) {
-      const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
-      return NextResponse.json(
-        {
-          ok: false,
-          error: 'Too many messages. Please try again in a few minutes.',
-          retryAfter,
-        },
-        {
-          status: 429,
-          headers: {
-            ...rateLimitHeaders(rateLimitResult),
-            'Retry-After': retryAfter.toString(),
-          },
-        }
+      return rateLimited(
+        rateLimitResult,
+        'Too many messages. Please try again in a few minutes.',
+        'ip'
+      );
+    }
+
+    // Checked after the per-IP window so one noisy address cannot burn
+    // the shared daily allowance on requests that were already rejected.
+    const dailyLimitResult = await checkChatDailyLimit(request);
+
+    if (!dailyLimitResult.success) {
+      return rateLimited(
+        dailyLimitResult,
+        'The assistant has reached its daily limit. Please try again tomorrow.',
+        'site'
       );
     }
 

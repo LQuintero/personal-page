@@ -9,6 +9,10 @@ interface LimiterConfig {
   limit: number;
   window: Duration;
   windowMs: number;
+  /**
+   * When set, every request shares this bucket. Omit it to key by client IP.
+   */
+  identifier?: string;
 }
 
 /**
@@ -35,6 +39,25 @@ const CHAT_LIMITER: LimiterConfig = {
   windowMs: 5 * 60 * 1000,
 };
 
+/**
+ * Whole-site daily cap: 200 messages per 24 hours, one shared bucket.
+ *
+ * The per-IP window does not bound the bill. Twenty messages per five
+ * minutes is about 5,760 calls a day from a single address, and a new
+ * address starts a new window. The bundled prompt is a few thousand
+ * tokens; at Haiku 4.5 rates ($1 / million input tokens, $5 / million
+ * output tokens, 300 output tokens max) a reply is on the order of a
+ * cent, so one busy address is tens of dollars before anyone looks.
+ * Two hundred replies is about $2.
+ */
+const CHAT_DAILY_LIMITER: LimiterConfig = {
+  prefix: 'ratelimit:chat:daily',
+  limit: 200,
+  window: '1 d',
+  windowMs: 24 * 60 * 60 * 1000,
+  identifier: 'site',
+};
+
 const limiterCache = new Map<string, Ratelimit>();
 
 function getLimiterOrNull(config: LimiterConfig): Ratelimit | null {
@@ -55,23 +78,32 @@ function getLimiterOrNull(config: LimiterConfig): Ratelimit | null {
 }
 
 /**
- * Gets the client IP address from the request
+ * Client IP for rate limiting.
+ *
+ * `x-vercel-forwarded-for` is the address Vercel sets. A visitor can send
+ * `x-forwarded-for` themselves, and a proxy in front of Vercel can
+ * overwrite it, so a limiter that prefers that header hands out a fresh
+ * allowance for every made-up address. The other headers are only a
+ * fallback for local development, where Vercel has not set one.
  */
 export function getClientIP(request: Request): string {
-  // Try to get IP from various headers (for proxies, load balancers, etc.)
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) {
-    // x-forwarded-for can contain multiple IPs, take the first one
-    return forwarded.split(',')[0].trim();
+  const vercelForwarded = request.headers.get('x-vercel-forwarded-for');
+  if (vercelForwarded) {
+    return vercelForwarded.split(',')[0].trim();
   }
 
   const realIP = request.headers.get('x-real-ip');
   if (realIP) {
-    return realIP;
+    return realIP.trim();
   }
 
-  // Fallback: use a default identifier if IP cannot be determined
-  // In production, this should rarely happen
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+
+  // One shared bucket when no address is available, so missing headers
+  // cannot each become their own unlimited key.
   return 'unknown';
 }
 
@@ -95,7 +127,7 @@ async function checkLimit(request: Request, config: LimiterConfig): Promise<Rate
     };
   }
 
-  const result = await limiter.limit(getClientIP(request));
+  const result = await limiter.limit(config.identifier ?? getClientIP(request));
 
   return {
     success: result.success,
@@ -113,6 +145,14 @@ export async function checkRateLimit(request: Request): Promise<RateLimitResult>
 /** Checks if the request should be rate limited (chat widget: 20 / 5 min). */
 export async function checkChatRateLimit(request: Request): Promise<RateLimitResult> {
   return checkLimit(request, CHAT_LIMITER);
+}
+
+/**
+ * Site-wide daily cap for chat. This is the limit that bounds spend:
+ * per-IP windows reset per address, and this one does not.
+ */
+export async function checkChatDailyLimit(request: Request): Promise<RateLimitResult> {
+  return checkLimit(request, CHAT_DAILY_LIMITER);
 }
 
 /** Standard X-RateLimit-* response headers for a checked request. */

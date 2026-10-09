@@ -1,13 +1,16 @@
 import { NextRequest } from 'next/server';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { checkChatRateLimit } = vi.hoisted(() => ({ checkChatRateLimit: vi.fn() }));
+const { checkChatRateLimit, checkChatDailyLimit } = vi.hoisted(() => ({
+  checkChatRateLimit: vi.fn(),
+  checkChatDailyLimit: vi.fn(),
+}));
 const { getChatReply } = vi.hoisted(() => ({ getChatReply: vi.fn() }));
 const { logChatMessage } = vi.hoisted(() => ({ logChatMessage: vi.fn() }));
 
 vi.mock('@/server/utils/rateLimiter', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/server/utils/rateLimiter')>();
-  return { ...actual, checkChatRateLimit };
+  return { ...actual, checkChatRateLimit, checkChatDailyLimit };
 });
 vi.mock('@/server/services/chatAssistant.service', () => ({ getChatReply }));
 // Keep the real isNoAnswerResponse so tests exercise the answered heuristic.
@@ -25,6 +28,13 @@ const allowedRateLimit = {
   reset: Date.now() + 5 * 60 * 1000,
 };
 
+const allowedDailyLimit = {
+  success: true,
+  limit: 200,
+  remaining: 199,
+  reset: Date.now() + 24 * 60 * 60 * 1000,
+};
+
 function makeRequest(body: unknown) {
   return new NextRequest('http://localhost/api/chat', {
     method: 'POST',
@@ -34,6 +44,10 @@ function makeRequest(body: unknown) {
 }
 
 describe('POST /api/chat', () => {
+  beforeEach(() => {
+    checkChatDailyLimit.mockResolvedValue(allowedDailyLimit);
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -54,6 +68,27 @@ describe('POST /api/chat', () => {
     expect(response.status).toBe(429);
     expect(data.ok).toBe(false);
     expect(getChatReply).not.toHaveBeenCalled();
+  });
+
+  it('returns 429 when the site-wide daily cap is exhausted', async () => {
+    checkChatRateLimit.mockResolvedValue(allowedRateLimit);
+    checkChatDailyLimit.mockResolvedValue({
+      success: false,
+      limit: 200,
+      remaining: 0,
+      reset: Date.now() + 60_000,
+    });
+
+    const response = await POST(
+      makeRequest({ messages: [{ role: 'user', content: 'hi there' }] })
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(429);
+    expect(data.ok).toBe(false);
+    expect(data.scope).toBe('site');
+    expect(getChatReply).not.toHaveBeenCalled();
+    expect(logChatMessage).not.toHaveBeenCalled();
   });
 
   it('returns 400 when the message body fails validation', async () => {

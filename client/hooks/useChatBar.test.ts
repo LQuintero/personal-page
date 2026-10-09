@@ -69,6 +69,22 @@ describe('useChatBar', () => {
     expect(result.current.messages.at(-1)?.content).toContain('give it a few minutes');
   });
 
+  it('shows a daily-limit message when the whole site is capped', async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse({ ok: false, error: 'daily cap reached', scope: 'site' }, 429)
+    );
+    const { result } = renderHook(() => useChatBar());
+
+    act(() => result.current.setInput('Hello'));
+    await act(async () => {
+      await result.current.sendMessage();
+    });
+
+    const last = result.current.messages.at(-1);
+    expect(last?.content).toContain('daily limit');
+    expect(last?.content).not.toContain('daily cap reached');
+  });
+
   it('disables send once the conversation reaches the cap', async () => {
     fetchMock.mockResolvedValue(jsonResponse({ ok: true, reply: 'Reply' }));
     const { result } = renderHook(() => useChatBar());

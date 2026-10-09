@@ -33,11 +33,12 @@ server/
                                real answer) to Upstash Redis — see
                                "Question log" below.
   utils/
-    rateLimiter.ts             Extended with checkChatRateLimit alongside
-                                the existing contact-form limiter (20
-                                messages / 5 minutes per IP, its own
-                                Upstash key prefix so it never shares a
-                                bucket with the contact form).
+    rateLimiter.ts             Per-IP limiter (20 messages / 5 minutes,
+                                keyed by x-vercel-forwarded-for) plus a
+                                site-wide daily cap (200 messages / 24h,
+                                one shared bucket). Own Upstash prefixes,
+                                so neither shares a bucket with the
+                                contact form.
 shared/
   validators/
     chat.validator.ts          Zod schema for chat requests, same pattern
@@ -133,9 +134,17 @@ option is the natural upgrade path.
 - **Prompt injection resistance**: the system prompt instructs the model
   to ignore instructions embedded in visitor messages.
 - **Rate limiting + input caps**: 20 messages / 5 minutes per IP via
-  Upstash (same infra as the contact form), plus message-length and
-  conversation-length caps enforced by the shared Zod schema and mirrored
-  in the client (12 messages max, Clear to continue).
+  Upstash, keyed by `x-vercel-forwarded-for` (the address Vercel sets;
+  a visitor-supplied `x-forwarded-for` does not mint a new allowance),
+  plus a site-wide cap of 200 messages per 24 hours. The per-IP window
+  stops one visitor. The daily cap is what bounds the Anthropic bill,
+  because a new address would otherwise start a new window. Message
+  length and conversation length are capped by the shared Zod schema
+  and mirrored in the client (12 messages max, Clear to continue).
+- **Monthly spend limit**: set one in the Claude Console under
+  Settings → Billing → Spend limits. The code cap is about $2/day if
+  it is hit continuously; the console limit is the hard stop if that
+  code is bypassed or the model price changes.
 - **Sanitized errors**: `app/api/chat/route.ts` reuses the same
   `handleError` utility as the contact route, so failures never leak
   implementation details to the client.
