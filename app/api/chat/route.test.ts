@@ -88,7 +88,7 @@ describe('POST /api/chat', () => {
     expect(response.status).toBe(429);
     expect(data.ok).toBe(false);
     expect(data.scope).toBe('site');
-    expect(data.error).toContain('2 hours');
+    expect(data.error).toContain('in up to 2 hours');
     expect(data.error).not.toContain('tomorrow');
     expect(getChatReply).not.toHaveBeenCalled();
     expect(logChatMessage).not.toHaveBeenCalled();

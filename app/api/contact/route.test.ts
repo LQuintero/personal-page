@@ -93,7 +93,7 @@ describe('POST /api/contact', () => {
     expect(response.status).toBe(429);
     expect(data.ok).toBe(false);
     expect(data.scope).toBe('site');
-    expect(data.error).toBe('Too many requests today. Please try again in 2 hours.');
+    expect(data.error).toBe('Too many requests today. Please try again in up to 2 hours.');
     expect(sendEmail).not.toHaveBeenCalled();
   });
 

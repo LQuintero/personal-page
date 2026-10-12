@@ -53,7 +53,7 @@ describe('useContactForm daily limit', () => {
     });
 
     expect(result.current.errors.general).toBe(
-      'Too many requests today. Please try again in 2 hours.'
+      'Too many requests today. Please try again in up to 2 hours.'
     );
     unmount();
   });

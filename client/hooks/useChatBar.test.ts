@@ -84,7 +84,7 @@ describe('useChatBar', () => {
     });
 
     const last = result.current.messages.at(-1);
-    expect(last?.content).toContain('in 6 hours');
+    expect(last?.content).toContain('in up to 6 hours');
     expect(last?.content).toContain('[here](/contact)');
     expect(last?.content).not.toContain('tomorrow');
     expect(last?.content).not.toContain('daily cap reached');
