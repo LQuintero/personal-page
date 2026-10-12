@@ -21,9 +21,9 @@ describe('formatRetryDelay', () => {
 describe('daily limit copy', () => {
   it('uses the server delay when one was sent', () => {
     expect(contactDailyLimitMessage(2 * 60 * 60)).toBe(
-      'Too many requests today. Please try again in 2 hours.'
+      'Too many requests today. Please try again in up to 2 hours.'
     );
-    expect(chatDailyLimitClientMessage(6 * 3600)).toContain('in 6 hours');
+    expect(chatDailyLimitClientMessage(6 * 3600)).toContain('in up to 6 hours');
     expect(chatDailyLimitClientMessage(6 * 3600)).not.toContain('tomorrow');
   });
 

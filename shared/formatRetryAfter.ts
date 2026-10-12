@@ -1,7 +1,9 @@
 /**
  * Visitor-facing delay for a rate-limit `retryAfter` value, in seconds.
- * That value is when the current bucket ends, so the phrase follows it
- * ("in 6 hours") instead of promising "tomorrow".
+ * Upstash's sliding window sets that value to the end of the current fixed
+ * bucket, and a denial does not increment the counter, so a slot can open
+ * before the bucket ends. The phrase is an upper bound ("in up to 6 hours")
+ * instead of promising the wait is exactly that long, or "tomorrow".
  */
 
 export function formatRetryDelay(retryAfterSeconds: number): string {
@@ -21,12 +23,12 @@ export function formatRetryDelay(retryAfterSeconds: number): string {
   return days === 1 ? '1 day' : `${days} days`;
 }
 
-/** "later", or "in 6 hours" when the server sent a finite delay. */
+/** "later", or "in up to 6 hours" when the server sent a finite delay. */
 export function retryWhen(retryAfterSeconds: unknown): string {
   if (typeof retryAfterSeconds !== 'number' || !Number.isFinite(retryAfterSeconds)) {
     return 'later';
   }
-  return `in ${formatRetryDelay(retryAfterSeconds)}`;
+  return `in up to ${formatRetryDelay(retryAfterSeconds)}`;
 }
 
 export function contactDailyLimitMessage(retryAfterSeconds: unknown): string {

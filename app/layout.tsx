@@ -43,7 +43,7 @@ export default function RootLayout({
         </div>
         <ThemeToggle />
         <Analytics/>
-        <SpeedInsights />
+        <SpeedInsights/>
       </body>
     </html>
   );
