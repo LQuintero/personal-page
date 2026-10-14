@@ -1,6 +1,6 @@
 # Facts Pack — the model's ONLY source of truth
 
-Curated by Laura. This is the ONLY source of truth for the chat assistant on Laura's portfolio site. If a fact isn't here, the assistant does not know it.
+Curated by Laura for a public portfolio. This is the ONLY source of truth for the chat assistant on Laura's portfolio site. If a fact isn't here, the assistant does not know it. Do not invent adoption, revenue, time savings, launch dates, measured outcomes, or responsibilities that are not stated here.
 
 ## Identity
 
@@ -36,8 +36,8 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 - Laura works on a small engineering team focused primarily on new-generation tools and system-wide optimizations.
 - Her work spans product, UX, architecture, implementation, infrastructure, and iteration.
 - Collaborates directly with sales on customer needs, with the CTO on product direction and construction-industry context, and with ML engineering on architecture and technical decisions.
-- Turns product direction and domain input from leadership into technical design and shipped features.
-- Makes architectural decisions for the systems and features she works on.
+- Translates high-level product priorities and domain input from leadership into detailed UX and technical solutions.
+- Owns interaction design, architectural decisions, and implementation for the features and systems within her scope, while incorporating stakeholder feedback.
 
 
 
@@ -58,16 +58,18 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 
 
 
-### Inspection notes
+### Inspection notes and AI Inspection Notes
 
-- Built an inspector notes feature end to end.
-- Scope spanned the interface, media attachments, server-side validation, the data layer, and route-level tests.
+- Developed and owned the inspection notes tool end to end.
+- Work spanned the interface, media attachments, server-side validation, the data layer, and route-level tests.
+- Also developed and owned the AI Inspection Notes feature for inspection workflows.
 
 
 
 ### Measurements
 
 - Owns the measurements subsystem end to end.
+- Currently completing development of 2D measurements; they should not yet be described as launched.
 - Built angle and triangulation measurement tools.
 - Built a measurement API with project-wide saving.
 - Built the sidebar list UI for measurements, including sorting, filtering, and bulk select.
@@ -77,10 +79,14 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 
 
 
-### Walkthrough and navigation
+### 3D viewer navigation and automated walkthrough
 
-- Built the sequence walkthrough experience for moving through a project's captured imagery.
-- Designed how the experience determines which directions are available to move at each capture point.
+- Overhauled navigation for Reconstruct's new 3D viewer and built its automated walkthrough experience.
+- Worked from the CTO's high-level feature priorities and a reference example, while independently defining interaction patterns, playback behavior, technical architecture, and implementation.
+- Incorporated teammate feedback into navigation details, including keyboard movement distances.
+- Designed and built a walkthrough that virtually follows the original capture path, with user-adjustable playback speed.
+- The walkthrough provides an alternative to navigating manually by clicking individual capture points.
+- Designed how the viewer determines available movement directions at each capture point.
 - Built a world-space arrow overlay and D-pad for directional navigation.
 - Designed auto-play with eased transitions for smoother playback.
 
@@ -98,15 +104,15 @@ Curated by Laura. This is the ONLY source of truth for the chat assistant on Lau
 
 - Enhances and maintains Reconstruct's Node.js authentication service, supporting enterprise SAML SSO and RBAC for multi-tenant access.
 - Contributed to a project-scoped authorization system spanning the auth service, a shared client library, and downstream backend-for-frontend services.
-- Implemented real-time JWT signing-key rotation using Redis pub/sub, with an AWS Secrets Manager-backed fallback.
+- Implemented automated JWT signing-key rotation with resilient fallback behavior.
 - Delivered feature work across BFF services (compliance features, inspection/measurement APIs, observability improvements).
 - Led infrastructure modernization: Node 22 migration, Mocha→Jest test migration, adoption of Vitest, and CI/CD pipeline setup.
 
 
 ### Platform and architecture work
 
-- Led the platform's migration from AWS-only infrastructure to a hybrid AWS/OCI architecture to meet a large infrastructure client's data-residency and privacy requirements.
-- The AWS/OCI migration unlocked a major enterprise sales opportunity.
+- Led a hybrid AWS/OCI infrastructure migration to meet enterprise data-residency and privacy requirements.
+- This work supported enterprise sales needs by addressing infrastructure requirements.
 - Refactored and optimized the production Three.js/WebGL 3D and 2D viewers for better rendering performance and stability.
 - Eliminated race conditions in the 3D and 2D viewers.
 - Manages Docker-based deployments and Terraform infrastructure across AWS and OCI.
