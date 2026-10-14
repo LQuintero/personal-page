@@ -10,6 +10,7 @@ import '@/client/styles/globals.css';
 const oswald = Oswald({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.lauraq.co'),
   title: siteConfig.metadata.title,
   description: siteConfig.metadata.description,
   openGraph: {
